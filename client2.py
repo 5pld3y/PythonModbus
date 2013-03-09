@@ -27,10 +27,23 @@ except socket.error as msg:
 	sys.exit();
 print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 
+while 1:
+    data = client.recv(512)
+    if ( data == 'q' or data == 'Q'):
+        client.close()
+        break;
+    else:
+        print "RECIEVED:" , data
+        data = raw_input ( "SEND( TYPE q or Q to Quit):" )
+        if (data != 'Q' and data != 'q'):
+            client.send(data)
+        else:
+            client.send(data)
+            client.close()
+            break;
 
+# client.send('Hello, world')
 
-client.send('Hello, world')
+# data = client.recv(1024)
 
-data = client.recv(1024)
-
-print 'Received', repr(data)
+# print 'Received', repr(data)
