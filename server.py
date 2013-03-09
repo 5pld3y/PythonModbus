@@ -1,38 +1,95 @@
-##server.py
-from socket import *    #import the socket library
-from sys import *
-server = socket
- 
-##let's set up some constants
-HOST = ""    #we are the host
-PORT = 29876    #arbitrary port not currently in use
-ADDR = (HOST,PORT)    #we need a tuple for the address
-BUFSIZE = 4096    #reasonably sized buffer for data
- 
-## now we create a new socket object (serv)
-## see the python docs for more information on the socket types/flags
+# Server Program
+import socket
+import sys
+import thread
+import _Getch
 
-# create an AF_INET, STREAM socket (TCP)
-server = socket( AF_INET,SOCK_STREAM)
-# AF_INET : Adress Family - This is IP version 4 or IPv4.
-# SOCK_STREAM : Type - this means connection oriented TCP protocol. 
-print "Socket Created!"
+
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 50007              # Arbitrary non-privileged port
+ADDR = (HOST,PORT)
+BUFSIZE = 4096
+
+
+##################
+# Creates Socket #
+##################
 
 try:
-	##bind our socket to the address
-	server.bind((ADDR))    #the double parens are to create a tuple with one element
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 except socket.error as msg:
-	print "Failed to bind socket."
-	print "Error Code: " + str(msg[0])
-	print "Error Message: " + str(msg[1])
-	sys.exit();
+    server = None
+    print "Failed to create socket!"
+    print "Error Code: " + str(msg[0])
+    print "Error Message: " + str(msg[1])
+    sys.exit();
+print "Socket Created!"
+
+################
+# Binds Socket #
+################
+
+try:
+    server.bind((ADDR))
+except socket.error as msg:
+    print "Failed to bind socket!"
+    print "Error Code: " + str(msg[0])
+    print "Error Message: " + str(msg[1])
+    sys.exit();
 print "Socket Bind complete!"
 
-server.listen(5)    #5 is the maximum number of queued connections we'll allow
-print "listening..."
- 
-conn,addr = server.accept() #accept the connection
-print "...connected!"
-conn.send("TEST")
- 
-conn.close()
+server.listen(5)
+print "listening on PORT " + str(PORT) + "..."
+
+
+# Defines Client Threading
+def clientthread(conn):
+    conn.send("Successful connection with server!")
+
+    while 1:
+        data = conn.recv(1024)
+        reply = "OK... " + data
+        if not data:
+            break
+        elif ( data == 'q' or data == 'Q'):
+            conn.close()
+            break;
+        else:
+            print "[" + addr[0] + ":" + str(addr[1]) + "]: " + data
+
+        conn.sendall(reply)
+
+    conn.close()
+
+# Defines Client Send Threading (NOT WORKING)
+def clientthread_send(conn):
+    while 1:
+        data = raw_input ( "SEND( TYPE q or Q to Quit):" )
+        if (data == 'Q' or data == 'q'):
+            conn.send (data)
+            conn.close()
+            break;
+        else:
+            conn.send(data)
+        conn.close()
+
+# Defines Server Threading (USES TOO MUCH RESOURCES)
+def serverthread():
+    while 1:
+        if (_Getch._Getch() == "s"):
+            print "conn closed"
+
+
+#############
+# Main Loop #
+#############
+
+while 1:
+    #thread.start_new_thread(serverthread , ())
+    conn, addr = server.accept()
+    print "Connected with " + addr[0] + ":" + str(addr[1])
+
+    thread.start_new_thread(clientthread ,(conn,))
+    #thread.start_new_thread(clientthread_send, (conn,))
+    
+server.close()
