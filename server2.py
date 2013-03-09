@@ -35,6 +35,8 @@ while 1:
     conn, addr = server.accept()
     print "Connected with " + addr[0] + ":" + str(addr[1])
 
+    num = conn.send("Successful connection with server!")
+    print num # returns the number of bytes sent of method send
     data = conn.recv(1024)
     # reply = "Ok..." + data
     # if not data:
