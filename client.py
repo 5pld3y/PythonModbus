@@ -1,6 +1,8 @@
 # Client program
 import socket
 import sys
+import modbustcp
+import modbusadu
 
 HOST = "localhost"    # The remote host
 PORT = 50007              # The same port as used by the server
@@ -43,17 +45,24 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 # Main Loop #
 #############
 
+# while 1:
+#     data = client.recv(1024)
+#     if ( data == 'q' or data == 'Q'):
+#         client.close()
+#         break;
+#     else:
+#         print "RECIEVED:" , data
+#         data = raw_input ( "SEND( TYPE q or Q to Quit):" )
+#         if (data != 'Q' and data != 'q'):
+#             #client.send(data)
+#             send(client, "ABC")
+#         else:
+#             client.send(data)
+#             client.close()
+#             break;
+
+client.send(modbusadu.modbus(3))
+
 while 1:
     data = client.recv(1024)
-    if ( data == 'q' or data == 'Q'):
-        client.close()
-        break;
-    else:
-        print "RECIEVED:" , data
-        data = raw_input ( "SEND( TYPE q or Q to Quit):" )
-        if (data != 'Q' and data != 'q'):
-            client.send(data)
-        else:
-            client.send(data)
-            client.close()
-            break;
+    print data

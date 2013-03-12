@@ -3,6 +3,7 @@ import socket
 import sys
 import thread
 import _Getch
+import modbusadu
 
 
 HOST = ''                 # Symbolic name meaning all available interfaces
@@ -48,14 +49,15 @@ def clientthread(conn):
 
     while 1:
         data = conn.recv(1024)
-        reply = "OK... " + data
+        dataDecoded = modbusadu.decode(data)
+        reply = "OK... " + str(dataDecoded)
         if not data:
             break
         elif ( data == 'q' or data == 'Q'):
             conn.close()
             break;
         else:
-            print "[" + addr[0] + ":" + str(addr[1]) + "]: " + data
+            print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
         conn.sendall(reply)
 
@@ -79,6 +81,21 @@ def serverthread():
         if (_Getch._Getch() == "s"):
             print "conn closed"
 
+# Defines Client Threading
+def clientthread_test(conn):
+    conn.send("Successful connection with server!")
+
+    while 1:
+        data = conn.recv(1024)
+        reply = "OK... " + data
+        if not data:
+            break
+        print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(sys.getsizeof(data))
+
+        conn.sendall(reply)
+
+    conn.close()
+
 
 #############
 # Main Loop #
@@ -90,6 +107,7 @@ while 1:
     print "Connected with " + addr[0] + ":" + str(addr[1])
 
     thread.start_new_thread(clientthread ,(conn,))
+    #thread.start_new_thread(clientthread_test, (conn,))
     #thread.start_new_thread(clientthread_send, (conn,))
     
 server.close()
