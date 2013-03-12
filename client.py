@@ -69,13 +69,12 @@ while 1:
     data = client.recv(1024)
     print data
 
-    option = interface.MenuClient()
-    print option
-
-    # if (option == 2):
-    # 	print "pasdas"
+    # option = interface.MenuClient()
+    # print option
+    # if option == 2:
+    # 	print "xpto"
     # else:
-    # 	print "asdadsads"
+    # 	print "abc"
     
     #if request != None:
     #	client.send(request)

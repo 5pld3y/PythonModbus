@@ -41,6 +41,9 @@ print "Socket Bind complete!"
 server.listen(5)
 print "listening on PORT " + str(PORT) + "..."
 
+############################################################
+############################################################
+
 
 # Defines Client Threading
 def clientthread(conn):
@@ -62,38 +65,40 @@ def clientthread(conn):
 
     conn.close()
 
-# Defines Client Send Threading (NOT WORKING)
-def clientthread_send(conn):
-    while 1:
-        data = raw_input ( "SEND( TYPE q or Q to Quit):" )
-        if (data == 'Q' or data == 'q'):
-            conn.send (data)
-            conn.close()
-            break;
-        else:
-            conn.send(data)
-        conn.close()
 
-# Defines Server Threading (USES TOO MUCH RESOURCES)
-def serverthread():
-    while 1:
-        if (_Getch._Getch() == "s"):
-            print "conn closed"
+# # Defines Client Send Threading (NOT WORKING)
+# def clientthread_send(conn):
+#     while 1:
+#         data = raw_input ( "SEND( TYPE q or Q to Quit):" )
+#         if (data == 'Q' or data == 'q'):
+#             conn.send (data)
+#             conn.close()
+#             break;
+#         else:
+#             conn.send(data)
+#         conn.close()
 
-# Defines Client Threading
-def clientthread_test(conn):
-    conn.send("Successful connection with server!")
+# # Defines Server Threading (USES TOO MUCH RESOURCES)
+# def serverthread():
+#     while 1:
+#         if (_Getch._Getch() == "s"):
+#             print "conn closed"
 
-    while 1:
-        data = conn.recv(1024)
-        reply = "OK... " + data
-        if not data:
-            break
-        print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(sys.getsizeof(data))
+# # Defines Client Threading
+# def clientthread_test(conn):
+#     conn.send("Successful connection with server!")
 
-        conn.sendall(reply)
+#     while 1:
+#         data = conn.recv(1024)
+#         reply = "OK... " + data
+#         if not data:
+#             break
+#         print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(sys.getsizeof(data))
 
-    conn.close()
+#         conn.sendall(reply)
+
+#     conn.close()
+
 
 
 #############

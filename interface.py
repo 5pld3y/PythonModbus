@@ -11,7 +11,6 @@ def MenuClient():
 	print "[6] Quit"
 	print ""
 	option = raw_input("Select an option: ")
-	#print ""
 	return option
 
 
