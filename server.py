@@ -2,7 +2,6 @@
 import socket
 import sys
 import thread
-import _Getch
 import modbusadu
 
 
