@@ -4,6 +4,7 @@ import sys
 import modbustcp
 import modbusadu
 import interface
+import select
 
 HOST = "localhost"    # The remote host
 PORT = 50007              # The same port as used by the server
@@ -63,18 +64,28 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 #             break;
 
 
+client.setblocking(0)
+
 client.send(modbusadu.modbus(3))
 
 while 1:
-    data = client.recv(1024)
-    print data
-
-    # option = interface.MenuClient()
-    # print option
-    # if option == 2:
-    # 	print "xpto"
-    # else:
-    # 	print "abc"
+    ready = select.select([client], [], [], 0.1)
     
-    #if request != None:
-    #	client.send(request)
+    if ready[0]:
+        data = client.recv(4096)
+        print data
+
+    option = interface.MenuClient()
+    print option
+    
+    if option == "2":
+        print "Option 2"
+        client.send("XPTO 2")
+    elif option == "3":
+        print "Option 3"
+        client.send("XPTO 3")
+    elif option == "4":
+        print "Option 4"
+        client.send(modbusadu.modbus(3))
+    else:
+        print "abc"

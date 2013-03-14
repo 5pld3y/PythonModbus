@@ -1,4 +1,5 @@
 def intTo2Bytes(value):
+	#Receives a int value and converts it to its representation in 2 Bytes
 
 	BYTES = bin(value)[2:].zfill(16)
 
