@@ -27,3 +27,13 @@ def readTCP(TCP):
 	print "Unit Identifier: " + str(UnitIdentifier)
 
 
+def readTCP_silent(TCP):
+	TI = TCP[0:2]
+	PI = TCP[2:4]
+	L = TCP[4:6]
+	UI = TCP[6]
+
+	TransactionIdentifier = TwoBytesToInt(TI)
+	ProtocolIdentifier = TwoBytesToInt(PI)
+	Length = TwoBytesToInt(L)
+	UnitIdentifier = UI

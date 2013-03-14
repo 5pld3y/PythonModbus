@@ -39,14 +39,27 @@ def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCo
 	else:
 		return "invalid"
 
-def modbus_decode(dataDecoded):
+def modbus_decode(dataDecoded, Registers):
 	ADU = dataDecoded
+
+	# Deals with the TCP
 	TCP = ADU[0:7]
 	readTCP(TCP)
-	PDU = ADU[7:]
-	PDU_response = readPDU(PDU)
-	PDU_response = TCP + PDU_response
-	return encode(PDU_response)
 
+	# Deals with the PDU
+	PDU = ADU[7:]
+	ADUandRegistersTuple = readPDU(PDU, Registers)
 	
 
+	ADU_response = TCP + ADUandRegistersTuple[0]
+	Registers = ADUandRegistersTuple[1]
+	return (encode(ADU_response), Registers)
+
+def modbus_response_decode(dataDecoded):
+	ADU = dataDecoded
+
+	TCP = ADU[0:7]
+	readTCP_silent(TCP)
+
+	PDU = ADU[7:]
+	interpretPDU(PDU)

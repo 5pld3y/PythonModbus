@@ -17,7 +17,7 @@ def createPDU(FunctionCode, StartingAdress, QuantityOfRegisters):
 	#PDU = data
 	#return PDU
 
-def readPDU(PDU):
+def readPDU(PDU, Registers):
 	FunctionCode = PDU[0]
 
 	print "== PDU =="
@@ -25,11 +25,16 @@ def readPDU(PDU):
 
 	if FunctionCode == 3:
 		print "(Read Holding Registers Function)"
-		PDU_response = PDUReadHoldingRegisters_response(PDU)
-		PDU_response = [FunctionCode] + PDU_response
-		return PDU_response
+		PDUandRegistersTuple = PDUReadHoldingRegisters_response(PDU, Registers)
 
+		PDU_response = [FunctionCode] + PDUandRegistersTuple[0]
+		Registers = PDUandRegistersTuple[1]
+		return (PDU_response, Registers)
 
+def interpretPDU(PDU):
+	FunctionCode = PDU[0]
+	if FunctionCode == 3:
+		PDUReadHoldingRegisters_interpret(PDU)
 
 def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
 	#Create Read Holding Registers
@@ -46,7 +51,8 @@ def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
 	
 	return PDU
 
-def PDUReadHoldingRegisters_response(PDU):
+def PDUReadHoldingRegisters_response(PDU, Registers):
+	# Returns a Tuple with the PDU_response and the Registers Values
 	FunctionCode = PDU[0]
 
 	SA = PDU[1:3]
@@ -57,16 +63,26 @@ def PDUReadHoldingRegisters_response(PDU):
 	QuantityOfRegisters = TwoBytesToInt(QoR)
 	print "Quantity Of Registers: " + str(QuantityOfRegisters)
 
-	## CODIGO PARA ALTERAR REGISTOS
+	RVi = Registers[(2*StartingAddress):]
+	RV = RVi[:2*QuantityOfRegisters]
 
 	ByteCount = 2 * QuantityOfRegisters
 	print "Byte Count: " + str(ByteCount)
 
 	BC = [ByteCount]
-	RV = [0]
 
 	PDU_response = BC + RV
-	return PDU_response
+	print ""
+	return (PDU_response, Registers)
+
+def PDUReadHoldingRegisters_interpret(PDU):
+	FunctionCode = PDU[0]
+	ByteCount = PDU[1]
+	RegisterValue = PDU[2:]
+
+	print " == Read Holding Registers =="
+	print "Number of Registers: " + str(ByteCount / 2)
+	print RegisterValue
 
 
 def PDUWriteMultipleRegisters():

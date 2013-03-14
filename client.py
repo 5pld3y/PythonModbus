@@ -75,16 +75,23 @@ while 1:
         data = client.recv(4096)
         dataDecoded = decode(data)
 
-        if dataDecoded == [0]:
+        if dataDecoded[0] == 255:
+            print ""
             print "Successful connection with server!"
+            FirstAddress = dataDecoded[1]
+            NumberOfRegisters = dataDecoded[2]
+            print "First Address: " + str(FirstAddress)
+            print "Number Of Registers: " + str(NumberOfRegisters)
         else:
             print dataDecoded
+            modbus_response_decode(dataDecoded)
+
     ### End of Receive Routine ####
 
     option = MenuClient()
     
     if option == "2":
-        request = MenuClient_Read()
+        request = MenuClient_Read(FirstAddress, NumberOfRegisters)
         client.send(request)
     elif option == "3":
         print "Option 3"
