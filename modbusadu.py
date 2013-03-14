@@ -3,11 +3,17 @@ import struct
 import modbustcp
 import modbuspdu
 
-def ADUReadHoldingRegisters():
+def ADUReadHoldingRegisters(FunctionCode, StartingAdress, QuantityOfRegisters):
 	# Create the full read holding registers ADU
+	#print "ADUReadHoldingRegisters FunctionCode: " + str(FunctionCode)
+	#print "ADUReadHoldingRegisters StartingAdress: " + str(StartingAdress)
+	#print "ADUReadHoldingRegisters QuantityOfRegisters:" + str(QuantityOfRegisters)
+	
 	TCP = modbustcp.createTCP()
-	PDU = modbuspdu.createPDU([3, 0, 0, 0, 1])
+	PDU = modbuspdu.createPDU(FunctionCode, StartingAdress, QuantityOfRegisters)
+	#print "PDU : " + str(PDU)
 	ADU = TCP + PDU
+	#print "ADU: " + str(ADU)
 	return ADU
 
 def ADUWriteHoldingRegisters():
@@ -23,8 +29,12 @@ def decode(data):
 	return list(struct.unpack('<'+'B'*len(data), data))
 
 def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCount = 0, RegisterValue = 0):
+	#print "modbus FunctionCode:" + str(FunctionCode)
+	#print "modbus StartingAdress:" + str(StartingAdress)
+	#print "modbus QuantityOfRegisters:" + str(QuantityOfRegisters) 
 	if FunctionCode == 3:
-		return encode(ADUReadHoldingRegisters())
+		#print "modbus ADU: " + str(ADUReadHoldingRegisters(FunctionCode, StartingAdress, QuantityOfRegisters))
+		return encode(ADUReadHoldingRegisters(FunctionCode, StartingAdress, QuantityOfRegisters))
 	elif FunctionCode == 10:
 		ADUWriteHoldingRegisters()
 	else:

@@ -65,22 +65,25 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 
 
 client.setblocking(0)
-
 client.send(modbusadu.modbus(3))
 
 while 1:
+
+    ### Receive Routine ###
     ready = select.select([client], [], [], 0.1)
     
     if ready[0]:
         data = client.recv(4096)
         print data
+    ### End of Receive Routine ####
 
     option = interface.MenuClient()
     print option
     
     if option == "2":
         print "Option 2"
-        client.send("XPTO 2")
+        request = interface.MenuClient_Read()
+        client.send(request)
     elif option == "3":
         print "Option 3"
         client.send("XPTO 3")
