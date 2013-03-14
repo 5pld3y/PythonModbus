@@ -65,7 +65,7 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 
 
 client.setblocking(0)
-client.send(modbusadu.modbus(3))
+#client.send(modbusadu.modbus(3))
 
 while 1:
 
@@ -74,14 +74,17 @@ while 1:
     
     if ready[0]:
         data = client.recv(4096)
-        print data
+        dataDecoded = modbusadu.decode(data)
+
+        if dataDecoded == [0]:
+            print "Successful connection with server!"
+        else:
+            print dataDecoded
     ### End of Receive Routine ####
 
     option = interface.MenuClient()
-    print option
     
     if option == "2":
-        print "Option 2"
         request = interface.MenuClient_Read()
         client.send(request)
     elif option == "3":

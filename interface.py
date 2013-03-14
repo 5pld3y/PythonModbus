@@ -20,7 +20,7 @@ def MenuClient_Read():
 	FunctionCode = 3
 	StartingAddress = int(raw_input("Starting Address: "))
 	QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
-	print "MenuClient_Read" + " " + str(StartingAddress) + " " + str(QuantityOfRegisters)
+	#print "MenuClient_Read" + " " + str(StartingAddress) + " " + str(QuantityOfRegisters)
 	request = modbusadu.modbus(FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 

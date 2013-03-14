@@ -1,6 +1,6 @@
 import sys
 import struct
-import intTo2Bytes
+from binoperations import *
 
 def createPDU(FunctionCode, StartingAdress, QuantityOfRegisters):
 	# data is a list
@@ -19,20 +19,57 @@ def createPDU(FunctionCode, StartingAdress, QuantityOfRegisters):
 	#PDU = data
 	#return PDU
 
+def readPDU(PDU):
+	FunctionCode = PDU[0]
+
+	print "== PDU =="
+	print "Function Code: " + str(FunctionCode)
+
+	if FunctionCode == 3:
+		print "(Read Holding Registers Function)"
+		PDU_response = PDUReadHoldingRegisters_response(PDU)
+		PDU_response = [FunctionCode] + PDU_response
+		return PDU_response
+
+
+
 def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
 	#Create Read Holding Registers
 	#print "PDUReadHoldingRegisters StartingAdress: " + str(StartingAdress)
 	#print "PDUReadHoldingRegisters QuantityOfRegisters: " + str(QuantityOfRegisters)
 
 	FC = [3]
-	SA = intTo2Bytes.intTo2Bytes(StartingAdress)
-	QoR = intTo2Bytes.intTo2Bytes(QuantityOfRegisters)
+	SA = intTo2Bytes(StartingAdress)
+	QoR = intTo2Bytes(QuantityOfRegisters)
 
 	PDU = FC + SA + QoR
 	
 	#print "PDUReadHoldingRegisters: " + str(PDU)
 	
 	return PDU
+
+def PDUReadHoldingRegisters_response(PDU):
+	FunctionCode = PDU[0]
+
+	SA = PDU[1:3]
+	StartingAddress = TwoBytesToInt(SA)
+	print "Starting Address: " + str(StartingAddress)
+
+	QoR = PDU[3:5]
+	QuantityOfRegisters = TwoBytesToInt(QoR)
+	print "Quantity Of Registers: " + str(QuantityOfRegisters)
+
+	## CODIGO PARA ALTERAR REGISTOS
+
+	ByteCount = 2 * QuantityOfRegisters
+	print "Byte Count: " + str(ByteCount)
+
+	BC = [ByteCount]
+	RV = [0]
+
+	PDU_response = BC + RV
+	return PDU_response
+
 
 def PDUWriteMultipleRegisters():
 	#create Write Multiple Registers

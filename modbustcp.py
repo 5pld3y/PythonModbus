@@ -1,5 +1,4 @@
-import sys
-import struct
+from binoperations import *
 
 # bytes = [0b00001010]
 # print bytes
@@ -22,15 +21,20 @@ def createTCP(TransactionIdentifier = [0,0], ProtocolIdentifier = [0,0], Length 
 	TCP = TI + PI + L + UI
 	return TCP
 
+def readTCP(TCP):
+	TI = TCP[0:2]
+	PI = TCP[2:4]
+	L = TCP[4:6]
+	UI = TCP[6]
+
+	TransactionIdentifier = TwoBytesToInt(TI)
+	ProtocolIdentifier = TwoBytesToInt(PI)
+	Length = TwoBytesToInt(L)
+	UnitIdentifier = UI
+	print "== MBAP Header =="
+	print "Transaction Identifier: " + str(TransactionIdentifier)
+	print "Protocol Identifier: " + str(ProtocolIdentifier)
+	print "Length: " + str(Length)
+	print "Unit Identifier: " + str(UnitIdentifier)
 
 
-
-# def IntToByte(binary):
-# 	# returns the packed data
-# 	data = [binary]
-# 	return struct.pack('<'+'B'*len(data), *data)
-
-# print IntToByte(int(0b00001010))
-
-#print createTCP()
-#print hex(10)

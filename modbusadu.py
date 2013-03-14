@@ -40,6 +40,14 @@ def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCo
 	else:
 		return "invalid"
 
-# data = modbus(3)
-# print data
-# print decode(data)
+def modbus_decode(dataDecoded):
+	ADU = dataDecoded
+	TCP = ADU[0:7]
+	modbustcp.readTCP(TCP)
+	PDU = ADU[7:]
+	PDU_response = modbuspdu.readPDU(PDU)
+	PDU_response = TCP + PDU_response
+	return encode(PDU_response)
+
+	
+

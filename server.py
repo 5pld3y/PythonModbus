@@ -47,12 +47,13 @@ print "listening on PORT " + str(PORT) + "..."
 
 # Defines Client Threading
 def clientthread(conn):
-    conn.send("Successful connection with server!")
+    #conn.send("Successful connection with server!")
+    conn.send(modbusadu.encode([0]))
 
     while 1:
         data = conn.recv(1024)
         dataDecoded = modbusadu.decode(data)
-        reply = "OK... " + str(dataDecoded)
+        reply = "Server Received: " + str(dataDecoded)
         if not data:
             break
         elif ( data == 'q' or data == 'Q'):
@@ -61,7 +62,11 @@ def clientthread(conn):
         else:
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
-        conn.sendall(reply)
+        PDU_response = modbusadu.modbus_decode(dataDecoded)
+
+        conn.sendall(PDU_response)
+
+
 
     conn.close()
 
