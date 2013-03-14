@@ -1,4 +1,4 @@
-import modbusadu
+from modbusadu import *
 
 def MenuClient():
 	print ""
@@ -21,6 +21,6 @@ def MenuClient_Read():
 	StartingAddress = int(raw_input("Starting Address: "))
 	QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
 	#print "MenuClient_Read" + " " + str(StartingAddress) + " " + str(QuantityOfRegisters)
-	request = modbusadu.modbus(FunctionCode, StartingAddress, QuantityOfRegisters)
+	request = modbus(FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 

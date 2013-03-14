@@ -1,16 +1,5 @@
 from binoperations import *
 
-# bytes = [0b00001010]
-# print bytes
-# print len(bytes)
-
-# encoded = struct.pack('<'+'B'*len(bytes), *bytes)
-# decoded = struct.unpack('<'+'B'*len(encoded), encoded)
-# print len(encoded)
-# print decoded
-# print len(decoded)
-# print struct.calcsize('<'+'B'*len(bytes))
-
 def createTCP(TransactionIdentifier = [0,0], ProtocolIdentifier = [0,0], Length = [0,1], UnitIdentifier = [0]):
 
 	TI = [0,0]

@@ -1,7 +1,6 @@
-import sys
 import struct
-import modbustcp
-import modbuspdu
+from modbustcp import *
+from modbuspdu import *
 
 def ADUReadHoldingRegisters(FunctionCode, StartingAdress, QuantityOfRegisters):
 	# Create the full read holding registers ADU
@@ -9,8 +8,8 @@ def ADUReadHoldingRegisters(FunctionCode, StartingAdress, QuantityOfRegisters):
 	#print "ADUReadHoldingRegisters StartingAdress: " + str(StartingAdress)
 	#print "ADUReadHoldingRegisters QuantityOfRegisters:" + str(QuantityOfRegisters)
 	
-	TCP = modbustcp.createTCP()
-	PDU = modbuspdu.createPDU(FunctionCode, StartingAdress, QuantityOfRegisters)
+	TCP = createTCP()
+	PDU = createPDU(FunctionCode, StartingAdress, QuantityOfRegisters)
 	#print "PDU : " + str(PDU)
 	ADU = TCP + PDU
 	#print "ADU: " + str(ADU)
@@ -43,9 +42,9 @@ def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCo
 def modbus_decode(dataDecoded):
 	ADU = dataDecoded
 	TCP = ADU[0:7]
-	modbustcp.readTCP(TCP)
+	readTCP(TCP)
 	PDU = ADU[7:]
-	PDU_response = modbuspdu.readPDU(PDU)
+	PDU_response = readPDU(PDU)
 	PDU_response = TCP + PDU_response
 	return encode(PDU_response)
 

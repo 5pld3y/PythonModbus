@@ -1,9 +1,7 @@
-import sys
-import struct
 from binoperations import *
 
 def createPDU(FunctionCode, StartingAdress, QuantityOfRegisters):
-	# data is a list
+
 	#print "createPDU FunctionCode: " + str(FunctionCode)
 	#print "createPDU StartingAdress: " + str(StartingAdress)
 	#print "createPDU QuantityOfRegisters: " + str(QuantityOfRegisters)
@@ -75,4 +73,3 @@ def PDUWriteMultipleRegisters():
 	#create Write Multiple Registers
 	return 1
 
-#print createPDU([3, 0, 0, 0, 1])

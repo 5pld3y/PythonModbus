@@ -23,3 +23,4 @@ print TwoBytesToInt(StartingAddress)
 QuantityOfRegisters = PDU[3:5]
 print QuantityOfRegisters
 print TwoBytesToInt(QuantityOfRegisters)
+

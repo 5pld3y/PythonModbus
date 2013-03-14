@@ -1,9 +1,8 @@
 # Client program
 import socket
 import sys
-import modbustcp
-import modbusadu
-import interface
+from modbusadu import *
+from interface import *
 import select
 
 HOST = "localhost"    # The remote host
@@ -65,7 +64,7 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 
 
 client.setblocking(0)
-#client.send(modbusadu.modbus(3))
+#client.send(modbus(3))
 
 while 1:
 
@@ -74,7 +73,7 @@ while 1:
     
     if ready[0]:
         data = client.recv(4096)
-        dataDecoded = modbusadu.decode(data)
+        dataDecoded = decode(data)
 
         if dataDecoded == [0]:
             print "Successful connection with server!"
@@ -82,16 +81,16 @@ while 1:
             print dataDecoded
     ### End of Receive Routine ####
 
-    option = interface.MenuClient()
+    option = MenuClient()
     
     if option == "2":
-        request = interface.MenuClient_Read()
+        request = MenuClient_Read()
         client.send(request)
     elif option == "3":
         print "Option 3"
         client.send("XPTO 3")
     elif option == "4":
         print "Option 4"
-        client.send(modbusadu.modbus(3))
+        client.send(modbus(3))
     else:
         print "abc"

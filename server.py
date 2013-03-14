@@ -2,7 +2,7 @@
 import socket
 import sys
 import thread
-import modbusadu
+from modbusadu import *
 
 
 HOST = ''                 # Symbolic name meaning all available interfaces
@@ -48,11 +48,11 @@ print "listening on PORT " + str(PORT) + "..."
 # Defines Client Threading
 def clientthread(conn):
     #conn.send("Successful connection with server!")
-    conn.send(modbusadu.encode([0]))
+    conn.send(encode([0]))
 
     while 1:
         data = conn.recv(1024)
-        dataDecoded = modbusadu.decode(data)
+        dataDecoded = decode(data)
         reply = "Server Received: " + str(dataDecoded)
         if not data:
             break
@@ -62,7 +62,7 @@ def clientthread(conn):
         else:
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
-        PDU_response = modbusadu.modbus_decode(dataDecoded)
+        PDU_response = modbus_decode(dataDecoded)
 
         conn.sendall(PDU_response)
 
