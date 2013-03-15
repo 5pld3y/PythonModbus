@@ -62,6 +62,6 @@ def PDUReadHoldingRegisters_interpret(PDU):
 	ByteCount = PDU[1]
 	RegisterValue = PDU[2:]
 
-	print "Number of Registers: " + str(ByteCount / 2)
+	print "Number of Registers read: " + str(ByteCount / 2)
 	print ""
 	printRegisters(RegisterValue)

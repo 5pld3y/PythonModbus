@@ -86,7 +86,5 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters):
 		i = i - 1
 		j = j + 1
 
-	print RegisterValue
-
 	request = modbus(FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
 	return request

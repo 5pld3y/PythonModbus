@@ -18,6 +18,15 @@ def decodePDU(PDU, Registers):
 		Registers = PDU_RESPONSEandRegistersTuple[1]
 		return (PDU_RESPONSE, Registers)
 
+	if FunctionCode == 16:
+		print "(Write Multiple Registers Function)"
+		PDU_RESPONSEandRegistersTuple = WriteMultipleRegistersSERVER(PDU, Registers)
+
+		PDU_RESPONSE = [FunctionCode] + PDU_RESPONSEandRegistersTuple[0]
+		Registers = PDU_RESPONSEandRegistersTuple[1]
+		return (PDU_RESPONSE, Registers)
+
+
 def ReadHoldingRegistersSERVER(PDU, Registers):
 	# Returns a Tuple with the PDU_response and the Registers Values
 	FunctionCode = PDU[0]
@@ -44,3 +53,37 @@ def ReadHoldingRegistersSERVER(PDU, Registers):
 	print ""
 	
 	return (PDU_RESPONSE, Registers)
+
+
+def WriteMultipleRegistersSERVER(PDU, Registers):
+	FunctionCode = PDU[0]
+
+	SA = PDU[1:3]
+	StartingAddress = TwoBytesToInt(SA)
+	print "Starting Address: " + str(StartingAddress)
+	
+	QoR = PDU[3:5]
+	QuantityOfRegisters = TwoBytesToInt(QoR)
+	print "Quantity Of Registers: " + str(QuantityOfRegisters)
+	
+	ByteCount = PDU[5]
+	print "Byte Count: " + str(ByteCount)
+	
+	RegisterValue = PDU[6:]
+	print "Register Value: " + str(RegisterValue)
+	
+	i = StartingAddress*2
+	k = 0
+
+	while (k < QuantityOfRegisters*2):
+		Registers[i] = RegisterValue[k]
+		i = i + 1
+		k = k + 1
+
+	print "Register: " + str(Registers)
+	print ""
+
+	PDU_RESPONSE = SA + QoR
+
+	return (PDU_RESPONSE, Registers)
+

@@ -70,9 +70,8 @@ while 1:
     ### End of Receive Routine ####
 
     request = MenuClient(FirstAddress, NumberOfRegisters)
-    
+
     if ((request != None)  & (request != "close")):
-        print "sent"
         client.send(request)
 
     if request == "close":
