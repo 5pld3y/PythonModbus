@@ -1,32 +1,22 @@
 # Server Program
+
 import socket
 import sys
 import thread
-from modbusadu import *
-
+from modbusADU_server import *
+from serverMENU import *
 
 ##################
 ## Initial Menu ##
 ##################
 
-print ""
-print "== Modbus Server =="
-PORT = int(raw_input("PORT: "))
-FirstAddress = int(raw_input("First Address: "))
-NumberOfRegisters = int(raw_input("Number Of Registers: "))
-print ""
+MENU_LIST = initialMENU()
 
-Registers = [0] * 2 * NumberOfRegisters
-
-#print Registers
-
-print "Do you want to initialize the Registers?"
-decision = raw_input("(type Y for Yes) ")
-
-if (decision == 'y' or decision == 'Y'):
-    print "Register Initialization"
-
-print ""
+PORT = MENU_LIST[0]
+FirstAddress = MENU_LIST[1]
+NumberOfRegisters = MENU_LIST[2]
+Registers = MENU_LIST[3:]
+Registers = Registers[0]
 
 
 ###############
@@ -36,7 +26,6 @@ print ""
 HOST = ''                 # Symbolic name meaning all available interfaces
 ADDR = (HOST,PORT)
 BUFSIZE = 4096
-
 
 
 ##################
@@ -69,18 +58,22 @@ print "Socket Bind complete!"
 server.listen(5)
 print "listening on PORT " + str(PORT) + "..."
 
+
 ############################################################
 ############################################################
 
 
-# Defines Client Threading
+############################
+# Defines Client Threading #
+############################
+
 def clientthread(conn, Registers):
     conn.send(encode([255, FirstAddress, NumberOfRegisters]))
+    print ""
     
     while 1:
         data = conn.recv(1024)
         dataDecoded = decode(data)
-        #reply = "Server Received: " + str(dataDecoded)
         
         if not data:
             break
@@ -91,50 +84,13 @@ def clientthread(conn, Registers):
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
         ADUandRegistersTuple = modbus_decode(dataDecoded, Registers)
+        
         ADU_response = ADUandRegistersTuple[0]
-
         Registers = ADUandRegistersTuple[1]
 
         conn.sendall(ADU_response)
 
-
-
     conn.close()
-
-
-# # Defines Client Send Threading (NOT WORKING)
-# def clientthread_send(conn):
-#     while 1:
-#         data = raw_input ( "SEND( TYPE q or Q to Quit):" )
-#         if (data == 'Q' or data == 'q'):
-#             conn.send (data)
-#             conn.close()
-#             break;
-#         else:
-#             conn.send(data)
-#         conn.close()
-
-# # Defines Server Threading (USES TOO MUCH RESOURCES)
-# def serverthread():
-#     while 1:
-#         if (_Getch._Getch() == "s"):
-#             print "conn closed"
-
-# # Defines Client Threading
-# def clientthread_test(conn):
-#     conn.send("Successful connection with server!")
-
-#     while 1:
-#         data = conn.recv(1024)
-#         reply = "OK... " + data
-#         if not data:
-#             break
-#         print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(sys.getsizeof(data))
-
-#         conn.sendall(reply)
-
-#     conn.close()
-
 
 
 #############

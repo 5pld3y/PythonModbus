@@ -1,15 +1,19 @@
-# Client program
+# Client Program
+
 import socket
 import sys
-from modbusadu import *
-from interface import *
+from modbusADU_client import *
+from clientMENU import *
 import select
 
-HOST = "localhost"    # The remote host
-PORT = 50007              # The same port as used by the server
-ADDR = (HOST,PORT)
-BUFSIZE = 4096
+###############
+## Constants ##
+###############
 
+HOST = "localhost"    # The remote host
+PORT = 50007          # The same port as used by the server
+ADDR = (HOST,PORT)    # Tuple address with remote host and port
+BUFSIZE = 4096        # The Bufsize used in communications
 
 ##################
 # Creates Socket #
@@ -26,7 +30,6 @@ except socket.error as msg:
 print "Socket Created!"
 
 
-
 ###################
 # Connects Socket #
 ###################
@@ -41,30 +44,11 @@ except socket.error as msg:
 print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 
 
-
 #############
 # Main Loop #
 #############
 
-# while 1:
-#     data = client.recv(1024)
-#     if ( data == 'q' or data == 'Q'):
-#         client.close()
-#         break;
-#     else:
-#         print "RECIEVED:" , data
-#         data = raw_input ( "SEND( TYPE q or Q to Quit):" )
-#         if (data != 'Q' and data != 'q'):
-#             #client.send(data)
-#             send(client, "ABC")
-#         else:
-#             client.send(data)
-#             client.close()
-#             break;
-
-
 client.setblocking(0)
-#client.send(modbus(3))
 
 while 1:
 
@@ -83,7 +67,7 @@ while 1:
             print "First Address: " + str(FirstAddress)
             print "Number Of Registers: " + str(NumberOfRegisters)
         else:
-            print dataDecoded
+            #print dataDecoded
             modbus_response_decode(dataDecoded)
 
     ### End of Receive Routine ####

@@ -1,3 +1,5 @@
+import struct
+
 def intTo2Bytes(value):
 	#Receives a int value and converts it to its representation in 2 Bytes in a list
 
@@ -19,3 +21,11 @@ def TwoBytesToInt(listOfBytes):
 	NUM = int(BIN, 2)
 
 	return NUM
+
+def encode(data):
+	# given a list, returns the binary code of the comand.
+	return struct.pack('<'+'B'*len(data), *data)
+
+def decode(data):
+	# given the binary code, returns a list
+	return list(struct.unpack('<'+'B'*len(data), data))
