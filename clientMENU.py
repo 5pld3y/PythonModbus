@@ -11,7 +11,7 @@ def SucessfulConnection(dataDecoded):
 	return [FirstAddress, NumberOfRegisters]
 
 
-def MenuClient(FirstAddress, NumberOfRegisters):
+def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print ""
 	print "== Client Menu =="
 	print "[1] Configure Server"
@@ -21,13 +21,14 @@ def MenuClient(FirstAddress, NumberOfRegisters):
 	print "[5] Write Loop"
 	print "[6] Quit"
 	print ""
+
 	option = raw_input("Select an option: ")
 
 	if option == "2":
-		request = MenuClient_Read(FirstAddress, NumberOfRegisters)
+		request = MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 	elif option == "3":
-		request = MenuClient_Write(FirstAddress, NumberOfRegisters)
+		request = MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 	elif option == "4":
 		print "Option 4"
@@ -43,7 +44,7 @@ def MenuClient(FirstAddress, NumberOfRegisters):
 		print "Invalid Option! (try again)"
 
 
-def MenuClient_Read(FirstAddress, NumberOfRegisters):
+def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print ""
 	print "== [2] Read Holding Registers =="
 	FunctionCode = 3
@@ -62,11 +63,11 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
 
-	request = modbus(FunctionCode, StartingAddress, QuantityOfRegisters)
+	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 
 
-def MenuClient_Write(FirstAddress, NumberOfRegisters):
+def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print ""
 	print "== [3] Write Multiple Registers =="
 	
@@ -97,5 +98,5 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters):
 		i = i - 1
 		j = j + 1
 
-	request = modbus(FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
+	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
 	return request

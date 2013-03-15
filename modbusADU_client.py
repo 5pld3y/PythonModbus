@@ -9,18 +9,19 @@ from binoperations import *
 ## REQUEST CLIENT ##
 ####################
 
-def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCount = 0, RegisterValue = 0):
+def modbus(TransactionIdentifier, FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCount = 0, RegisterValue = 0):
 
 
 	PDU = createPDU(FunctionCode, StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue)
 	
 	Length = len(PDU)
-	TransactionIdentifier = 0
 
-	TCP = createTCP(TransactionIdentifier, Length)
+	TCPandTransactionIdentifierLIST = createTCP(TransactionIdentifier, Length)
+	TCP = TCPandTransactionIdentifierLIST[0]
+	TransactionIdentifier = TCPandTransactionIdentifierLIST[1]
 	ADU = TCP + PDU
 
-	return encode(ADU)
+	return [encode(ADU), TransactionIdentifier]
 
 #####################
 ## RESPONSE CLIENT ##

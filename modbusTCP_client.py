@@ -14,7 +14,7 @@ def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 0, Uni
 	UI = [UnitIdentifier]
 
 	TCP = TI + PI + L + UI
-	return TCP
+	return [TCP, TransactionIdentifier]
 
 #####################
 ## RESPONSE CLIENT ##

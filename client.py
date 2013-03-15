@@ -14,6 +14,7 @@ HOST = "localhost"    # The remote host
 PORT = 50007          # The same port as used by the server
 ADDR = (HOST,PORT)    # Tuple address with remote host and port
 BUFSIZE = 4096        # The Bufsize used in communications
+TransactionIdentifier = 0
 
 ##################
 # Creates Socket #
@@ -69,10 +70,11 @@ while 1:
 
     ### End of Receive Routine ####
 
-    request = MenuClient(FirstAddress, NumberOfRegisters)
+    request = MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 
     if ((request != None)  & (request != "close")):
-        client.send(request)
+        client.send(request[0])
+        TransactionIdentifier = TransactionIdentifier + 1
 
     if request == "close":
         client.close()
