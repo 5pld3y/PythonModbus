@@ -4,7 +4,7 @@ from modbusTCP_server import *
 from modbusPDU_server import *
 from binoperations import *
 
-def modbus_decode(dataDecoded, Registers):
+def modbus_decode(dataDecoded, Registers, FirstAddress):
 	ADU = dataDecoded
 
 	# Deals with the TCP
@@ -14,7 +14,7 @@ def modbus_decode(dataDecoded, Registers):
 	# Deals with the PDU
 	PDU = ADU[7:]
 
-	PDU_RESPONSEandRegistersTuple = decodePDU(PDU, Registers)
+	PDU_RESPONSEandRegistersTuple = decodePDU(PDU, Registers, FirstAddress)
 	
 
 	ADU_RESPONSE = TCP + PDU_RESPONSEandRegistersTuple[0]

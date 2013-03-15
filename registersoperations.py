@@ -6,6 +6,6 @@ def printRegisters(Registers, StartAddress=0):
 	while i < len(Registers):
 		X = [Registers[i], Registers[i+1]]
 		Num = TwoBytesToInt(X)
-		print "R" + str(j) + ": " + str(Num)
+		print "R[Starting Address+" + str(j) + "]: " + str(Num)
 		i = i + 2
 		j = j + 1

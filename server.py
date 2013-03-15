@@ -67,7 +67,7 @@ print "listening on PORT " + str(PORT) + "..."
 # Defines Client Threading #
 ############################
 
-def clientthread(conn, Registers):
+def clientthread(conn, Registers, FirstAddress):
     conn.send(encode([255, FirstAddress, NumberOfRegisters]))
     print ""
     
@@ -83,7 +83,7 @@ def clientthread(conn, Registers):
         else:
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
-        ADUandRegistersTuple = modbus_decode(dataDecoded, Registers)
+        ADUandRegistersTuple = modbus_decode(dataDecoded, Registers, FirstAddress)
         
         ADU_response = ADUandRegistersTuple[0]
         Registers = ADUandRegistersTuple[1]
@@ -102,6 +102,6 @@ while 1:
     conn, addr = server.accept()
     print "Connected with " + addr[0] + ":" + str(addr[1])
 
-    thread.start_new_thread(clientthread ,(conn,Registers))
+    thread.start_new_thread(clientthread ,(conn,Registers,FirstAddress))
 
 server.close()

@@ -52,12 +52,16 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters):
 	if (StartingAddress < FirstAddress):
 		print "Starting Address must be greater or equal to " + str(FirstAddress)
 		return None
-		# Fazer funcao para acabar de detetar o erro
+	if (StartingAddress >= (FirstAddress + NumberOfRegisters)):
+		print "Starting Address must be less or equal to " + str(FirstAddress+NumberOfRegisters-1)
+		return None
+
 
 	QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
-	#print "MenuClient_Read" + " " + str(StartingAddress) + " " + str(QuantityOfRegisters)
-	#print "StartingAddress: " + str(StartingAddress)
-	#print "QuantityOfRegisters: " + str(QuantityOfRegisters)
+	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
+		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
+		return None
+
 	request = modbus(FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 
@@ -69,10 +73,17 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters):
 	FunctionCode = 16
 	
 	StartingAddress = int(raw_input("Starting Address: "))
-	# FAZER FUNCAO PARA DETECTAR O ERRO
+	if (StartingAddress < FirstAddress):
+		print "Starting Address must be greater or equal to " + str(FirstAddress)
+		return None
+	if (StartingAddress >= (FirstAddress + NumberOfRegisters)):
+		print "Starting Address must be less or equal to " + str(FirstAddress+NumberOfRegisters-1)
+		return None
 
 	QuantityOfRegisters = int(raw_input("Quantity Of Registers: "))
-	# FAZER FUNCAO PARA DETECTAR O ERRO
+	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
+		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
+		return None
 
 	ByteCount = 2 * QuantityOfRegisters
 

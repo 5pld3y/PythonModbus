@@ -4,7 +4,7 @@ from binoperations import *
 from registersoperations import *
 
 
-def decodePDU(PDU, Registers):
+def decodePDU(PDU, Registers, FirstAddress):
 	FunctionCode = PDU[0]
 
 	print "== PDU =="
@@ -12,7 +12,7 @@ def decodePDU(PDU, Registers):
 
 	if FunctionCode == 3:
 		print "(Read Holding Registers Function)"
-		PDU_RESPONSEandRegistersTuple = ReadHoldingRegistersSERVER(PDU, Registers)
+		PDU_RESPONSEandRegistersTuple = ReadHoldingRegistersSERVER(PDU, Registers, FirstAddress)
 
 		PDU_RESPONSE = [FunctionCode] + PDU_RESPONSEandRegistersTuple[0]
 		Registers = PDU_RESPONSEandRegistersTuple[1]
@@ -20,14 +20,14 @@ def decodePDU(PDU, Registers):
 
 	if FunctionCode == 16:
 		print "(Write Multiple Registers Function)"
-		PDU_RESPONSEandRegistersTuple = WriteMultipleRegistersSERVER(PDU, Registers)
+		PDU_RESPONSEandRegistersTuple = WriteMultipleRegistersSERVER(PDU, Registers, FirstAddress)
 
 		PDU_RESPONSE = [FunctionCode] + PDU_RESPONSEandRegistersTuple[0]
 		Registers = PDU_RESPONSEandRegistersTuple[1]
 		return (PDU_RESPONSE, Registers)
 
 
-def ReadHoldingRegistersSERVER(PDU, Registers):
+def ReadHoldingRegistersSERVER(PDU, Registers, FirstAddress):
 	# Returns a Tuple with the PDU_response and the Registers Values
 	FunctionCode = PDU[0]
 
@@ -40,7 +40,7 @@ def ReadHoldingRegistersSERVER(PDU, Registers):
 	print "Quantity Of Registers: " + str(QuantityOfRegisters)
 
 	# Selects the Values of the Registers to Read
-	RVi = Registers[(2*StartingAddress):]
+	RVi = Registers[(2*(StartingAddress-FirstAddress)):]
 	RV = RVi[:2*QuantityOfRegisters]
 
 	ByteCount = 2 * QuantityOfRegisters
@@ -55,7 +55,7 @@ def ReadHoldingRegistersSERVER(PDU, Registers):
 	return (PDU_RESPONSE, Registers)
 
 
-def WriteMultipleRegistersSERVER(PDU, Registers):
+def WriteMultipleRegistersSERVER(PDU, Registers, FirstAddress):
 	FunctionCode = PDU[0]
 
 	SA = PDU[1:3]
@@ -72,7 +72,7 @@ def WriteMultipleRegistersSERVER(PDU, Registers):
 	RegisterValue = PDU[6:]
 	print "Register Value: " + str(RegisterValue)
 	
-	i = StartingAddress*2
+	i = (StartingAddress-FirstAddress)*2
 	k = 0
 
 	while (k < QuantityOfRegisters*2):
