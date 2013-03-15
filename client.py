@@ -60,28 +60,23 @@ while 1:
         dataDecoded = decode(data)
 
         if dataDecoded[0] == 255:
-            print ""
-            print "Successful connection with server!"
-            FirstAddress = dataDecoded[1]
-            NumberOfRegisters = dataDecoded[2]
-            print "First Address: " + str(FirstAddress)
-            print "Number Of Registers: " + str(NumberOfRegisters)
+            Connection = SucessfulConnection(dataDecoded)
+            FirstAddress = Connection[0]
+            NumberOfRegisters = Connection[1]
+
         else:
-            #print dataDecoded
             modbus_response_decode(dataDecoded)
 
     ### End of Receive Routine ####
 
-    option = MenuClient()
+    request = MenuClient(FirstAddress, NumberOfRegisters)
     
-    if option == "2":
-        request = MenuClient_Read(FirstAddress, NumberOfRegisters)
+    if ((request != None)  & (request != "close")):
+        print "sent"
         client.send(request)
-    elif option == "3":
-        print "Option 3"
-        client.send("XPTO 3")
-    elif option == "4":
-        print "Option 4"
-        client.send(modbus(3))
-    else:
-        print "abc"
+
+    if request == "close":
+        client.close()
+        ## FAZER FUNCAO PARA DIZER AO SERVIDOR QUE CLIENTE FECHOU! ##
+        break;
+    

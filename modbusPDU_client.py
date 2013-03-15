@@ -13,7 +13,7 @@ def createPDU(FunctionCode=0, StartingAdress=0, QuantityOfRegisters=0, ByteCount
 		return PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters)
 
 	elif FunctionCode == 16:
-		return "Write"
+		return PDUWriteMultipleRegisters_CREATE(StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue)
 
 	else:
 		return "Invalid Function Number!"
@@ -30,6 +30,19 @@ def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
 
 	PDU = FC + SA + QoR
 	
+	return PDU
+
+## WRITE MULTIPLE REGISTERS ##
+
+def PDUWriteMultipleRegisters_CREATE(StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue):
+	FC = [16]
+	SA = intTo2Bytes(StartingAdress)
+	QoR = intTo2Bytes(QuantityOfRegisters)
+	BC = [ByteCount]
+	RV = RegisterValue
+
+	PDU = FC + SA + QoR + BC + RV
+
 	return PDU
 
 

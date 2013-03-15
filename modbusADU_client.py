@@ -14,6 +14,7 @@ def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCo
 	TCP = createTCP()
 	PDU = createPDU(FunctionCode, StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue)
 	ADU = TCP + PDU
+	print ADU
 	return encode(ADU)
 
 #####################
