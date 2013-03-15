@@ -18,3 +18,16 @@ def decodeTCP(TCP):
 	print "Length: " + str(Length)
 	print "Unit Identifier: " + str(UnitIdentifier)
 
+	return TransactionIdentifier
+
+
+def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 0, UnitIdentifier = 0):
+
+	TI = intTo2Bytes(TransactionIdentifier)
+	PI = intTo2Bytes(0)
+	L = intTo2Bytes(Length+1)
+	UI = [UnitIdentifier]
+
+	TCP = TI + PI + L + UI
+	return TCP
+

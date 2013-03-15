@@ -11,8 +11,13 @@ from binoperations import *
 
 def modbus(FunctionCode = 0, StartingAdress = 0, QuantityOfRegisters = 0, ByteCount = 0, RegisterValue = 0):
 
-	TCP = createTCP()
+
 	PDU = createPDU(FunctionCode, StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue)
+	
+	Length = len(PDU)
+	TransactionIdentifier = 0
+
+	TCP = createTCP(TransactionIdentifier, Length)
 	ADU = TCP + PDU
 
 	return encode(ADU)

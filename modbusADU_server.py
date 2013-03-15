@@ -9,10 +9,14 @@ def modbus_decode(dataDecoded, Registers, FirstAddress):
 
 	# Deals with the TCP
 	TCP = ADU[0:7]
-	decodeTCP(TCP)
+	TransactionIdentifier = decodeTCP(TCP)
 
 	# Deals with the PDU
 	PDU = ADU[7:]
+
+	Length = len(PDU)
+
+	createTCP(TransactionIdentifier, Length)
 
 	PDU_RESPONSEandRegistersTuple = decodePDU(PDU, Registers, FirstAddress)
 	
