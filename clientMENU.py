@@ -1,6 +1,14 @@
 from modbusADU_client import *
 from binoperations import *
 
+def InitialMENU():
+	print ""
+	print "== Modbus Client =="
+	HOST = raw_input("HOST Address: ")
+	PORT = int(raw_input("PORT: "))
+	print ""
+	return (HOST,PORT)
+
 def SucessfulConnection(dataDecoded):
 	print ""
 	print "Successful connection with server!"
@@ -8,7 +16,7 @@ def SucessfulConnection(dataDecoded):
 	NumberOfRegisters = dataDecoded[2]
 	print "First Address: " + str(FirstAddress)
 	print "Number Of Registers: " + str(NumberOfRegisters)
-	return [FirstAddress, NumberOfRegisters]
+	return (FirstAddress, NumberOfRegisters)
 
 
 def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):

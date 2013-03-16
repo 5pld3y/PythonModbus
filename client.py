@@ -6,13 +6,19 @@ from modbusADU_client import *
 from clientMENU import *
 import select
 
+##################
+## Initial Menu ##
+##################
+
+ADDR = InitialMENU()   # Tuple address with remote host and port
+
+
 ###############
 ## Constants ##
 ###############
 
-HOST = "localhost"    # The remote host
-PORT = 50007          # The same port as used by the server
-ADDR = (HOST,PORT)    # Tuple address with remote host and port
+HOST = ADDR[0]
+PORT = ADDR[1]
 BUFSIZE = 4096        # The Bufsize used in communications
 TransactionIdentifier = 0
 
@@ -36,7 +42,7 @@ print "Socket Created!"
 ###################
 
 try:
-	client.connect((HOST, PORT))
+	client.connect(ADDR)
 except socket.error as msg:
 	print "Failed to connect!"
 	print "Error code: " + str(msg[0])
