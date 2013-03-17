@@ -127,61 +127,63 @@ while 1:
 
     request = MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 
-    if ((request != None)  & (request != "close") & (request[0] != "READLOOP")):
-        client.send(request[0])
-        TransactionIdentifier = TransactionIdentifier + 1
+    if (request != None):
 
-    if request == "close":
-        client.send("close")
-        client.close()
-        break
-        ## FAZER FUNCAO PARA DIZER AO SERVIDOR QUE CLIENTE FECHOU! ##
-
-    if request[0] == "READLOOP":
-        TIME = request[1]
-        StartingAddress = request[2]
-        QuantityOfRegisters = request[3]
-        EncodedData = request[4]
-
-        while 1:
-            #request == ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
-            # modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
-            set_curses_term()
-            s.enter((TIME/100), 1, client.send, (EncodedData,))         
-            s.run()
-            print "Transaction Identifier: " + str(TransactionIdentifier)
+        if ((request != "close") & (request[0] != "READLOOP")):
+            client.send(request[0])
             TransactionIdentifier = TransactionIdentifier + 1
-            MODBUSDirectRequest = modbus(TransactionIdentifier, 3, StartingAddress, QuantityOfRegisters)
-            EncodedData = MODBUSDirectRequest[0]
 
 
-            # Receive Routine #
+        if request == "close":
+            client.send("close")
+            client.close()
+            break
+        
+        if request[0] == "READLOOP":
+            TIME = request[1]
+            StartingAddress = request[2]
+            QuantityOfRegisters = request[3]
+            EncodedData = request[4]
 
-            ready = select([client], [], [], 0.1)
-    
-            if ready[0]:
-                data = client.recv(4096)
-                dataDecoded = decode(data)
-
-            modbus_response_decode(dataDecoded)
-
-            # End of Receive Routine #
-
-            print ""
-            print "Press ESC to quit"
-            print ""
-
-            # ESC ROUTINE #
-
-            
-            if kbhit():
-                if (ord(getche()) == 27):
-                    set_normal_term()
-                    print "q"
-                    print "ESC Key pressed!"
-                    break;
+            while 1:
+                #request == ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
+                # modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
+                set_curses_term()
+                s.enter((TIME/100), 1, client.send, (EncodedData,))         
+                s.run()
+                print "Transaction Identifier: " + str(TransactionIdentifier)
+                TransactionIdentifier = TransactionIdentifier + 1
+                MODBUSDirectRequest = modbus(TransactionIdentifier, 3, StartingAddress, QuantityOfRegisters)
+                EncodedData = MODBUSDirectRequest[0]
 
 
+                # Receive Routine #
 
-            # END of ESC ROUTINE #
+                ready = select([client], [], [], 0.1)
+        
+                if ready[0]:
+                    data = client.recv(4096)
+                    dataDecoded = decode(data)
+
+                modbus_response_decode(dataDecoded)
+
+                # End of Receive Routine #
+
+                print ""
+                print "Press ESC to quit"
+                print ""
+
+                # ESC ROUTINE #
+
+                
+                if kbhit():
+                    if (ord(getche()) == 27):
+                        set_normal_term()
+                        print "q"
+                        print "ESC Key pressed!"
+                        break;
+
+
+
+                # END of ESC ROUTINE #
     

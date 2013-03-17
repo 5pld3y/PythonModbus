@@ -4,7 +4,7 @@ from modbusTCP_server import *
 from modbusPDU_server import *
 from binoperations import *
 
-def modbus_decode(dataDecoded, Registers, FirstAddress):
+def modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters):
 	ADU = dataDecoded
 
 	# Deals with the TCP
@@ -18,7 +18,7 @@ def modbus_decode(dataDecoded, Registers, FirstAddress):
 
 	createTCP(TransactionIdentifier, Length)
 
-	PDU_RESPONSEandRegistersTuple = decodePDU(PDU, Registers, FirstAddress)
+	PDU_RESPONSEandRegistersTuple = decodePDU(PDU, Registers, FirstAddress, NumberOfRegisters)
 	
 
 	ADU_RESPONSE = TCP + PDU_RESPONSEandRegistersTuple[0]

@@ -27,9 +27,8 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print "[1] Configure Server"
 	print "[2] Read Holding Registers"
 	print "[3] Write Multiple Registers"
-	print "[4] Read Holding Registers Loop"
-	print "[5] Write Multiple Registers Loop"
-	print "[6] Quit"
+	print "[4] Enter Custom PDU"
+	print "[5] Quit"
 	print ""
 
 	option = raw_input("Select an option: ")
@@ -41,13 +40,10 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		request = MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 	elif option == "4":
-		print "Option 4"
-		return None
+		request = MenuClient_CustomPDU(TransactionIdentifier)
+		return request
 	elif option == "5":
-		print "Option 5"
-		return None
-	elif option == "6":
-		print "== [6] Quit =="
+		print "== [5] Quit =="
 		print "Client Closed!"
 		return "close"
 	else:
@@ -125,3 +121,13 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
 	return request
 
+def MenuClient_CustomPDU(TransactionIdentifier):
+	# FunctionCode passed as the full PDU.
+
+	LIST = raw_input("Enter the PDU in int without spaces: ")
+	FunctionCode = list(LIST)
+	FunctionCode = map(int, FunctionCode)
+	print ""
+
+	request = modbus(TransactionIdentifier, FunctionCode)
+	return request

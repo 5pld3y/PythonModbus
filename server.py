@@ -85,7 +85,7 @@ def clientthread(conn, Registers, FirstAddress):
         else:
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
-        ADUandRegistersTuple = modbus_decode(dataDecoded, Registers, FirstAddress)
+        ADUandRegistersTuple = modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters)
         
         ADU_response = ADUandRegistersTuple[0]
         Registers = ADUandRegistersTuple[1]
