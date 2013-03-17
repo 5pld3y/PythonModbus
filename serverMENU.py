@@ -13,14 +13,33 @@ def initialMENU():
 	#print Registers
 
 	print "Do you want to initialize the Registers?"
-	decision = raw_input("(type Y for Yes) ")
+	decision = raw_input("(type Y or y for YES, ENTER for NO) ")
 
 	if (decision == 'y' or decision == 'Y'):
-	    print "Register Initialization"
+		print ""
+		print "== Register Initialization =="
+		Registers = RegisterInitialize(Registers, FirstAddress, NumberOfRegisters)
+		print "Register: " + str(Registers)
 
 	print ""
 
 	return [PORT, FirstAddress, NumberOfRegisters, Registers]
+
+def RegisterInitialize(Registers, FirstAddress, NumberOfRegisters):
+
+	Registers = []
+
+	i = 0
+	while (i < NumberOfRegisters) :
+		V = int(raw_input("R" + str(i + FirstAddress) + ": "))
+		Registers = Registers + [V]
+		i += 1
+
+	return Registers
+
+
+
+
 
 def serverMENU():
 	print ""
@@ -31,6 +50,8 @@ def serverMENU():
 	print ""
 
 	option = raw_input("Select an option: ")
+	print ""
+	return option
 
 
 
