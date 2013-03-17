@@ -88,6 +88,8 @@ def Error(PDU):
 
 	if FunctionCode == 131:
 		print "READ HOLDING REGISTERS ERROR!"
+	elif FunctionCode == 144:
+		print "WRITE MULTIPLE REGISTERS ERROR!"
 	else:
 		print "ERROR!"
 	print "Function Code: " + str(FunctionCode)

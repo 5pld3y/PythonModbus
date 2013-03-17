@@ -47,15 +47,15 @@ def ReadHoldingRegistersSERVER(PDU, Registers, FirstAddress, NumberOfRegisters):
 	StartingAddress = TwoBytesToInt(SA)
 
 	if (len(PDU) != 5):
-		ExceptionCode = 4
+		ExceptionCode = 3
 		EC = [ExceptionCode]
 		FunctionCode = 131 #0x83
 		FC = [FunctionCode]
 		PDU_RESPONSE = FC + EC
 		print "ERROR!"
 		print "Exception Code: " + str(ExceptionCode)
-		print "EXCEPTION: SERVER DEVICE FAILURE!"
-		print "An unrecoverable error occurred while the server was attempting to perform the requested action."
+		print "EXCEPTION: ILLEGAL DATA VALUE!"
+		print "A value contained in the query data field is not an allowable value for the serve."
 		print ""
 		return (PDU_RESPONSE, Registers)
 
@@ -167,9 +167,39 @@ def WriteMultipleRegistersSERVER(PDU, Registers, FirstAddress, NumberOfRegisters
 	QoR = PDU[3:5]
 	QuantityOfRegisters = TwoBytesToInt(QoR)
 	print "Quantity Of Registers: " + str(QuantityOfRegisters)
+
+	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
+		ExceptionCode = 2
+		EC = [ExceptionCode]
+		FunctionCode = 144  #0x90
+		FC = [FunctionCode]
+		PDU_RESPONSE = FC + EC
+
+		print "ERROR!"
+		print "Exception Code: " + str(ExceptionCode)
+		print "EXCEPTION: ILLEGAL DATA ADDRESS!"
+		print "The data address received in the query is not an allowable address for the server."		
+		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
+		print ""
+		return (PDU_RESPONSE, Registers)
 	
 	ByteCount = PDU[5]
 	print "Byte Count: " + str(ByteCount)
+
+	if (len(PDU) != (ByteCount+6)):
+		ExceptionCode = 3
+		EC = [ExceptionCode]
+		FunctionCode = 144 #0x83
+		FC = [FunctionCode]
+		PDU_RESPONSE = FC + EC
+
+		print "ERROR!"
+		print "Exception Code: " + str(ExceptionCode)
+		print "EXCEPTION: ILLEGAL DATA VALUE!"
+		print "A value contained in the query data field is not an allowable value for the serve."
+		print ""
+		return (PDU_RESPONSE, Registers)
+
 	
 	RegisterValue = PDU[6:]
 	print "Register Value: " + str(RegisterValue)
