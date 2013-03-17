@@ -22,3 +22,15 @@ def initialMENU():
 
 	return [PORT, FirstAddress, NumberOfRegisters, Registers]
 
+def serverMENU():
+	print ""
+	print "== Server MENU =="
+	print "[1] Configure Server"
+	print "[2] Listen"
+	print "[3] Quit"
+	print ""
+
+	option = raw_input("Select an option: ")
+
+
+

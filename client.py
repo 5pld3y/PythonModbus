@@ -132,7 +132,9 @@ while 1:
         TransactionIdentifier = TransactionIdentifier + 1
 
     if request == "close":
+        client.send("close")
         client.close()
+        break
         ## FAZER FUNCAO PARA DIZER AO SERVIDOR QUE CLIENTE FECHOU! ##
 
     if request[0] == "READLOOP":

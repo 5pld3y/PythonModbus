@@ -74,11 +74,13 @@ def clientthread(conn, Registers, FirstAddress):
     while 1:
         data = conn.recv(1024)
         dataDecoded = decode(data)
-        
+
         if not data:
             break
-        elif ( data == 'q' or data == 'Q'):
+        elif data == "close":
             conn.close()
+            print "Disconnected from " + addr[0] + ":" + str(addr[1])
+            print ""
             break;
         else:
             print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
