@@ -124,9 +124,10 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 def MenuClient_CustomPDU(TransactionIdentifier):
 	# FunctionCode passed as the full PDU.
 
-	LIST = raw_input("Enter the PDU in int without spaces: ")
-	FunctionCode = list(LIST)
-	FunctionCode = map(int, FunctionCode)
+	INPUT = raw_input("Enter the PDU in int with spaces: ")
+	#FunctionCode = list(LIST)
+	FunctionCode = map(int, INPUT.split())
+	print "PDU: " + str(FunctionCode)
 	print ""
 
 	request = modbus(TransactionIdentifier, FunctionCode)

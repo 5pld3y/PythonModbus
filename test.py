@@ -70,6 +70,9 @@
 # loop(modbusSEND, 100)
 
 
-results = ["1", "2", "3"]
-results = map(int, results)
+results = "1 2 3"
+
+results = map(int, results.split())
 print results
+print type(results)
+print type(results[0])

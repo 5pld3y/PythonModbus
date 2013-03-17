@@ -132,6 +132,37 @@ def WriteMultipleRegistersSERVER(PDU, Registers, FirstAddress, NumberOfRegisters
 	SA = PDU[1:3]
 	StartingAddress = TwoBytesToInt(SA)
 	print "Starting Address: " + str(StartingAddress)
+
+	if (StartingAddress < FirstAddress):
+		ExceptionCode = 2
+		EC = [ExceptionCode]
+		FunctionCode = 144  #0x90
+		FC = [FunctionCode]
+		PDU_RESPONSE = FC + EC
+
+		print "ERROR!"
+		print "Exception Code: " + str(ExceptionCode)
+		print "EXCEPTION: ILLEGAL DATA ADDRESS!"
+		print "The data address received in the query is not an allowable address for the server."
+		print "Starting Address must be greater or equal to " + str(FirstAddress)
+		print ""
+		return (PDU_RESPONSE, Registers)
+
+	if (StartingAddress >= (FirstAddress + NumberOfRegisters)):
+		ExceptionCode = 2
+		EC = [ExceptionCode]
+		FunctionCode = 144  #0x90
+		FC = [FunctionCode]
+		PDU_RESPONSE = FC + EC
+
+		print "ERROR!"
+		print "Exception Code: " + str(ExceptionCode)
+		print "EXCEPTION: ILLEGAL DATA ADDRESS!"
+		print "The data address received in the query is not an allowable address for the server."
+		print "Starting Address must be less or equal to " + str(FirstAddress+NumberOfRegisters-1)
+		print ""
+		return (PDU_RESPONSE, Registers)
+
 	
 	QoR = PDU[3:5]
 	QuantityOfRegisters = TwoBytesToInt(QoR)
