@@ -37,10 +37,6 @@ def RegisterInitialize(Registers, FirstAddress, NumberOfRegisters):
 
 	return Registers
 
-
-
-
-
 def serverMENU():
 	print ""
 	print "== Server MENU =="
