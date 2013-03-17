@@ -129,7 +129,7 @@ while 1:
 
     if (request != None):
 
-        if ((request != "close") & (request[0] != "READLOOP")):
+        if ((request != "close") & (request[0] != "READLOOP") & (request[0] != "WRITELOOP")):
             client.send(request[0])
             TransactionIdentifier = TransactionIdentifier + 1
 
@@ -139,11 +139,11 @@ while 1:
             client.close()
             break
         
-        if request[0] == "READLOOP":
-            TIME = request[1]
-            StartingAddress = request[2]
-            QuantityOfRegisters = request[3]
-            EncodedData = request[4]
+        if request[0] == "READLOOP":                        # if the instruction is for a Read Loop
+            TIME = request[1]                               # Get the Time from MenuClient
+            StartingAddress = request[2]                    # Get the Starting Address from MenuClient
+            QuantityOfRegisters = request[3]                # Get the Quantity of Registers from MenuClient
+            EncodedData = request[4]                        # Get the Encoded Data from MenuClient
 
             while 1:
                 #request == ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
@@ -186,4 +186,51 @@ while 1:
 
 
                 # END of ESC ROUTINE #
+
+        if request[0] == "WRITELOOP":
+            TIME = request[1]                               # Get the Time from MenuClient
+            StartingAddress = request[2]                    # Get the Starting Address from MenuClient
+            QuantityOfRegisters = request[3]                # Get the Quantity of Registers from MenuClient                     # Get the Encoded Data from MenuClient
+            ByteCount = request[4]
+
+            while 1:
+
+                print "Transaction Identifier: " + str(TransactionIdentifier)
+                TransactionIdentifier = TransactionIdentifier + 1
+
+
+                set_normal_term()
+                RegisterValue = []
+                i = QuantityOfRegisters
+                j = StartingAddress
+
+                while i>0:
+                    X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
+                    RegisterValue = RegisterValue + X
+                    i = i - 1
+                    j = j + 1
+                set_curses_term()
+
+
+                MODBUSDirectRequest = modbus(TransactionIdentifier, 16, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
+                EncodedData = MODBUSDirectRequest[0]
+
+                s.enter((TIME/100), 1, client.send, (EncodedData,))         
+                s.run()
+
+                # ESC ROUTINE #
+
+                
+                if kbhit():
+                    if (ord(getche()) == 27):
+                        set_normal_term()
+                        print "q"
+                        print "ESC Key pressed!"
+                        break;
+
+
+
+                # END of ESC ROUTINE #
+
+
     

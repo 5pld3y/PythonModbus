@@ -108,6 +108,23 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	ByteCount = 2 * QuantityOfRegisters
 
+
+
+
+	try:
+		Time = int(raw_input(("Time in ms (press ENTER for just one read): ")))
+	except ValueError:
+		Time = None
+
+	if Time != None:
+		if Time < 0:
+			print "Time must be positive!"
+		elif Time > MAX_TIME:
+			print "Time mus be less than " + str(MAX_TIME) + "ms"
+		else:
+
+			return ["WRITELOOP", Time, StartingAddress, QuantityOfRegisters, ByteCount]
+
 	RegisterValue = []
 	i = QuantityOfRegisters
 	j = StartingAddress
