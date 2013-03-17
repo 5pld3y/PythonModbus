@@ -1,6 +1,8 @@
 from modbusADU_client import *
 from binoperations import *
 
+MAX_TIME = 300
+
 def InitialMENU():
 	print ""
 	print "== Modbus Client =="
@@ -25,8 +27,8 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print "[1] Configure Server"
 	print "[2] Read Holding Registers"
 	print "[3] Write Multiple Registers"
-	print "[4] Read Loop"
-	print "[5] Write Loop"
+	print "[4] Read Holding Registers Loop"
+	print "[5] Write Multiple Registers Loop"
 	print "[6] Quit"
 	print ""
 
@@ -71,6 +73,20 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
 
+	try:
+		Time = int(raw_input(("Time in ms (press ENTER for just one read): ")))
+	except ValueError:
+		Time = None
+
+	if Time != None:
+		if Time < 0:
+			print "Time must be positive!"
+		elif Time > MAX_TIME:
+			print "Time mus be less than " + str(MAX_TIME) + "ms"
+		else:
+			request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
+			return ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
+
 	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 
@@ -108,3 +124,4 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
 	return request
+

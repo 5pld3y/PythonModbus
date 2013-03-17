@@ -1,52 +1,44 @@
+import sys, termios, atexit
+from select import select
+
+
+
 def ESC():
+	# save the terminal settings
+	fd = sys.stdin.fileno()
+	new_term = termios.tcgetattr(fd)
+	old_term = termios.tcgetattr(fd)
 
-	try:
-	    from msvcrt import *
-	except ImportError:
-		import sys, termios, atexit
-		from select import select
+	# new terminal setting unbuffered
+	new_term[3] = (new_term[3] & ~termios.ICANON & ~termios.ECHO)
 
-		# save the terminal settings
-		fd = sys.stdin.fileno()
-		new_term = termios.tcgetattr(fd)
-		old_term = termios.tcgetattr(fd)
+	# switch to normal terminal
+	def set_normal_term():
+	    termios.tcsetattr(fd, termios.TCSAFLUSH, old_term)
 
-		# new terminal setting unbuffered
-		new_term[3] = (new_term[3] & ~termios.ICANON & ~termios.ECHO)
+	# switch to unbuffered terminal
+	def set_curses_term():
+	    termios.tcsetattr(fd, termios.TCSAFLUSH, new_term)
 
-		# switch to normal terminal
-		def set_normal_term():
-		    termios.tcsetattr(fd, termios.TCSAFLUSH, old_term)
+	def putch(ch):
+	    sys.stdout.write(ch)
 
-		# switch to unbuffered terminal
-		def set_curses_term():
-		    termios.tcsetattr(fd, termios.TCSAFLUSH, new_term)
+	def getch():
+	    return sys.stdin.read(1)
 
-		def putch(ch):
-		    sys.stdout.write(ch)
+	def getche():
+	    ch = getch()
+	    putch(ch)
+	    return ch
 
-		def getch():
-		    return sys.stdin.read(1)
+	def kbhit():
+	    dr,dw,de = select([sys.stdin], [], [], 0)
+	    return dr <> []
 
-		def getche():
-		    ch = getch()
-		    putch(ch)
-		    return ch
+	if __name__ == '__main__':
+		atexit.register(set_normal_term)
+		set_curses_term()
 
-		def kbhit():
-		    dr,dw,de = select([sys.stdin], [], [], 0)
-		    return dr <> []
 
-		if __name__ == '__main__':
-		    atexit.register(set_normal_term)
-		    set_curses_term()
 
-		    while 1:
-		        if kbhit():
-		            if (ord(getche()) == 27):
-		            	print "q"
-		            	break
-		        
-		    print "ESC Key pressed!"
 
-ESC()
