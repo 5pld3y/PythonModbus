@@ -68,7 +68,10 @@ ADDR = InitialMENU()
 HOST = ADDR[0]                  # Contains the HOST address
 PORT = ADDR[1]                  # Contains the PORT number
 BUFSIZE = 4096                  # The Bufsize used in communications
+
 TransactionIdentifier = 0       # Set the initial Transaction Identifier value to 0 (zero)
+FirstAddress = 0                # The default First Address (to be actualized if that function is available in the server)
+NumberOfRegisters = 65535       # The default Number of Registers (to be actualized if that function is available in the server)
 
 # Initialize a scheduler to be used in the loop commands.
 s = sched.scheduler(time.time, time.sleep)
@@ -126,6 +129,7 @@ while 1:
         # Test to check if it's the first data packet received (marked with the first value of 255).
         # If it is, calls function SucessfulConnection to deal with the data received.
         # Saves the values of the First Address and the Number of Registers of the server.
+        # Some serves might not send this information. If that's the case, see the values defined at Constants
         if dataDecoded[0] == 255:
             Connection = SucessfulConnection(dataDecoded)
             FirstAddress = Connection[0]
@@ -289,4 +293,3 @@ while 1:
 
 
     ### END OF CLIENT REQUEST ###
-    

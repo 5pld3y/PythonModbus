@@ -1,9 +1,16 @@
+# clientMENU.py
+
+# Imports
 from modbusADU_client import *
 from binoperations import *
 
+# Constants
 MAX_TIME = 300
 
+
 def InitialMENU():
+	# Prints the Initial Menu, and returns a Tuple with the HOST address and PORT number.
+
 	print ""
 	print "== Modbus Client =="
 	HOST = raw_input("HOST Address: ")
@@ -11,7 +18,12 @@ def InitialMENU():
 	print ""
 	return (HOST,PORT)
 
+
+
 def SucessfulConnection(dataDecoded):
+	# Prints the Sucessful Connection message, and gets from the dataDecoded list the First Address and 
+	# the Number of Registers. Returns both as a Tuple.
+
 	print ""
 	print "Successful connection with server!"
 	FirstAddress = dataDecoded[1]
@@ -21,7 +33,18 @@ def SucessfulConnection(dataDecoded):
 	return (FirstAddress, NumberOfRegisters)
 
 
+
 def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
+	# Prints the Client Menu, and deals with the client selection.
+	# This Function can return: 
+	# 1. - The already encoded ADU to be sent to the server as a request;
+    # 2. - The string "close", that results in the client socket being terminated;
+    # 3. - A list with the following syntax: [ "READLOOP", TIME, StartingAddress, QuantityOfRegisters, EncodedData ],
+    #      that results in a Read Loop command.
+    # 4. - A list with the following syntax: [ "WRITELOOP", TIME, StartingAddress, QuantityOfRegisters, ByteCount ],
+    #      that result in a Write Loop command.
+
+
 	print ""
 	print "== Client Menu =="
 	print "[1] Configure Server"
@@ -34,28 +57,47 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	option = raw_input("Select an option: ")
 
 	if option == "2":
+		# Read Holding Registers
+		# 
 		request = MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
+	
 	elif option == "3":
+		# Write Multiple Registers
 		request = MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
+
 	elif option == "4":
+		# Enter Custom PDU
 		request = MenuClient_CustomPDU(TransactionIdentifier)
 		return request
+
 	elif option == "5":
+		# Quit
 		print "== [5] Quit =="
 		print "Client Closed!"
 		return "close"
+
 	else:
+		# Invalid Option
 		print "Invalid Option! (try again)"
 
 
 def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
+	# Function for dealing with a Read Holding Registers request.
+	# Can return:
+	# 1. - The already encoded ADU to be sent to the server as a request;
+    # 3. - A list with the following syntax: [ "READLOOP", TIME, StartingAddress, QuantityOfRegisters, EncodedData ],
+    #      that results in a Read Loop command.
+
 	print ""
 	print "== [2] Read Holding Registers =="
-	FunctionCode = 3
+	FunctionCode = 3 			# Modbus Function Code of a Read Holding Registers Function.
 	
 	StartingAddress = int(raw_input("Starting Address: "))
+	
+	# Checks if Starting Address is a valid number, doing tests with the First Address and the Number of Registers of the Server.
+	# If it is not, returns None and breaks.
 	if (StartingAddress < FirstAddress):
 		print "Starting Address must be greater or equal to " + str(FirstAddress)
 		return None
@@ -65,6 +107,9 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 
 	QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
+
+	# Checks if Quantity of Registers is a valid number, doing tests with the First Address and the Number of Registers of the Server.
+	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
