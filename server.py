@@ -30,9 +30,11 @@ def set_normal_term():
 def set_curses_term():
     termios.tcsetattr(fd, termios.TCSAFLUSH, new_term)
 
+# puts a char in the stdout
 def putch(ch):
     sys.stdout.write(ch)
 
+# gets the value of the key pressed
 def getch():
     return sys.stdin.read(1)
 

@@ -17,9 +17,9 @@ def initialMENU():
 	# Asks the User to initialize the Registers
 
 	print "Do you want to initialize the Registers?"
-	decision = raw_input("(type Y or y for YES, ENTER for NO) ")
+	option = raw_input("(type Y or y for YES, ENTER for NO) ")
 
-	if (decision == 'y' or decision == 'Y'):
+	if (option == 'y' or option == 'Y'):
 		print ""
 		print "== Register Initialization =="
 		# Calls the function RegistersInitialize to handle the initializations.
@@ -32,6 +32,8 @@ def initialMENU():
 
 	# returns a list to be called MENU_LIST in the server.py file.
 	return [PORT, FirstAddress, NumberOfRegisters, Registers]
+
+
 
 def RegistersInitialize(Registers, FirstAddress, NumberOfRegisters):
 	# Function to initalize the registers
@@ -46,9 +48,11 @@ def RegistersInitialize(Registers, FirstAddress, NumberOfRegisters):
 
 	return Registers 		# Returns the Registers list.
 
+
+
 def serverMENU():
 	# Prints and returns the user selection.
-	
+
 	print ""
 	print "== Server MENU =="
 	print "[1] Configure Server"
