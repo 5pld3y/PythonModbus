@@ -1,13 +1,13 @@
 # Client Program
 
+# Imports
 import socket
 import sys
-from modbusADU_client import *
-from clientMENU import *
-#from test import *
-
 import sched
 import time
+from modbusADU_client import *
+from clientMENU import *
+
 
 #################
 ## ESC ROUTINE ##
@@ -16,7 +16,6 @@ import time
 # imports
 import sys, termios, atexit
 from select import select
-
 
 # save the terminal settings
 fd = sys.stdin.fileno()
@@ -58,18 +57,22 @@ set_normal_term()
 ## Initial Menu ##
 ##################
 
-ADDR = InitialMENU()   # Tuple address with remote host and port
+# Prints the Initial Menu and returns a Tuple address with remote host and port
+ADDR = InitialMENU()
 
 
 ###############
 ## Constants ##
 ###############
 
-HOST = ADDR[0]
-PORT = ADDR[1]
-BUFSIZE = 4096        # The Bufsize used in communications
-TransactionIdentifier = 0
+HOST = ADDR[0]                  # Contains the HOST address
+PORT = ADDR[1]                  # Contains the PORT number
+BUFSIZE = 4096                  # The Bufsize used in communications
+TransactionIdentifier = 0       # Set the initial Transaction Identifier value to 0 (zero)
+
+# Initialize a scheduler to be used in the loop commands.
 s = sched.scheduler(time.time, time.sleep)
+
 
 ##################
 # Creates Socket #
@@ -104,67 +107,104 @@ print "Socket Connected to " + HOST + " on PORT " + str(PORT)
 # Main Loop #
 #############
 
+# Sets the Client socket to non-blocking mode.
+# Results in the Client socket not blocking the code flow.
 client.setblocking(0)
 
+# Infinite loop:
 while 1:
 
-    ### Receive Routine ###
+    ### DATA RECEIVE ROUTINE ###
+
+    # Wait for notification that an input or output channel is ready
     ready = select([client], [], [], 0.1)
     
     if ready[0]:
-        data = client.recv(4096)
-        dataDecoded = decode(data)
+        data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+        dataDecoded = decode(data)              # Decodes the data received to a list of integers.
 
+        # Test to check if it's the first data packet received (marked with the first value of 255).
+        # If it is, calls function SucessfulConnection to deal with the data received.
+        # Saves the values of the First Address and the Number of Registers of the server.
         if dataDecoded[0] == 255:
             Connection = SucessfulConnection(dataDecoded)
             FirstAddress = Connection[0]
             NumberOfRegisters = Connection[1]
 
+        # If it's not the first data packet, deals with it the normal way. As it's a response from the server,
+        # calls function modbus_response_decode to deal with the already decoded (into a list) data.
         else:
             modbus_response_decode(dataDecoded)
 
-    ### End of Receive Routine ####
+    ### END OF RECEIVE ROUTINE ####
+
+
+    ### CLIENT REQUEST ###
+
+    # Calls the MenuClient function, that prints the menu and deals with the user selection, and returns:
+    # 1. - The already encoded ADU to be sent to the server as a request;
+    # 2. - The string "close", that results in the client socket being terminated;
+    # 3. - A list with the following syntax: [ "READLOOP", TIME, StartingAddress, QuantityOfRegisters, EncodedData ],
+    #      that results in a Read Loop command.
+    # 4. - A list with the following syntax: [ "WRITELOOP", TIME, StartingAddress, QuantityOfRegisters, ByteCount ],
+    #      that result in a Write Loop command.
 
     request = MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 
+    # Checks to see if request is a valid value (not None).
     if (request != None):
+        # If it is, enter...
 
+        # 1. - request is the already encoded ADU to be sent to the server as a request.
         if ((request != "close") & (request[0] != "READLOOP") & (request[0] != "WRITELOOP")):
             client.send(request[0])
             TransactionIdentifier = TransactionIdentifier + 1
 
-
+        # 2. - request is == "close", that results in the client socket being terminated.
         if request == "close":
             client.send("close")
             client.close()
             break
         
+        # 3. request = [ "READLOOP", TIME, StartingAddress, QuantityOfRegisters, EncodedData ]
+        # Read Loop command.
         if request[0] == "READLOOP":                        # if the instruction is for a Read Loop
+
             TIME = request[1]                               # Get the Time from MenuClient
             StartingAddress = request[2]                    # Get the Starting Address from MenuClient
             QuantityOfRegisters = request[3]                # Get the Quantity of Registers from MenuClient
-            EncodedData = request[4]                        # Get the Encoded Data from MenuClient
+            EncodedData = request[4]                        # Get the Encoded Data from MenuClient to be used in the first loop iteration.
+
 
             while 1:
-                #request == ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
-                # modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
-                set_curses_term()
+
+                set_curses_term()                           # Sets the terminal to "capture a key" mode
+
+                # Sets the client.send action, with argument EncodedData, to be delayed by TIME/100. (TIME is in ms)
                 s.enter((TIME/100), 1, client.send, (EncodedData,))         
+                
+                # Runs the previous setting
                 s.run()
+
+                # Prints and increments the Transaction Identifier, to be used in the following Read command.
                 print "Transaction Identifier: " + str(TransactionIdentifier)
                 TransactionIdentifier = TransactionIdentifier + 1
+
+                # Generates a already encoded ADU, to be used as a request in the following loop iterations.
                 MODBUSDirectRequest = modbus(TransactionIdentifier, 3, StartingAddress, QuantityOfRegisters)
                 EncodedData = MODBUSDirectRequest[0]
 
 
                 # Receive Routine #
 
+                # Wait for notification that an input or output channel is ready
                 ready = select([client], [], [], 0.1)
         
                 if ready[0]:
-                    data = client.recv(4096)
-                    dataDecoded = decode(data)
+                    data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+                    dataDecoded = decode(data)              # Decodes the data received to a list of integers.
 
+                # Calls function modbus_response_decode to deal with the already decoded (into a list) data.
                 modbus_response_decode(dataDecoded)
 
                 # End of Receive Routine #
@@ -175,10 +215,10 @@ while 1:
 
                 # ESC ROUTINE #
 
-                
+                # Checks if ESC is pressed. If it is, terminates the loop.
                 if kbhit():
                     if (ord(getche()) == 27):
-                        set_normal_term()
+                        set_normal_term()           # Sets the terminal to normal mode.
                         print "q"
                         print "ESC Key pressed!"
                         break;
@@ -187,19 +227,27 @@ while 1:
 
                 # END of ESC ROUTINE #
 
-        if request[0] == "WRITELOOP":
+
+        # 4. - request = [ "WRITELOOP", TIME, StartingAddress, QuantityOfRegisters, ByteCount ]
+        # Write Loop command
+        if request[0] == "WRITELOOP":                       # if the instruction is for a Write Loop
+
             TIME = request[1]                               # Get the Time from MenuClient
             StartingAddress = request[2]                    # Get the Starting Address from MenuClient
-            QuantityOfRegisters = request[3]                # Get the Quantity of Registers from MenuClient                     # Get the Encoded Data from MenuClient
-            ByteCount = request[4]
+            QuantityOfRegisters = request[3]                # Get the Quantity of Registers from MenuClient
+            ByteCount = request[4]                          # Get the Byte Count from MenuClient
 
             while 1:
 
+                # Prints and increments the Transaction Identifier, to be used in the following Read command.
                 print "Transaction Identifier: " + str(TransactionIdentifier)
                 TransactionIdentifier = TransactionIdentifier + 1
 
 
-                set_normal_term()
+                set_normal_term()           # Sets the terminal to normal mode
+
+                # Registers Write Routine #
+
                 RegisterValue = []
                 i = QuantityOfRegisters
                 j = StartingAddress
@@ -209,28 +257,36 @@ while 1:
                     RegisterValue = RegisterValue + X
                     i = i - 1
                     j = j + 1
-                set_curses_term()
 
+                # End of Registers Write Routine #
 
+                set_curses_term()           # Sets the terminal to capture a key mode
+
+                # Generates a already encoded ADU, to be used as a request in the following loop iterations.
                 MODBUSDirectRequest = modbus(TransactionIdentifier, 16, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
                 EncodedData = MODBUSDirectRequest[0]
 
+
+                # Sets the client.send action, with argument EncodedData, to be delayed by TIME/100. (TIME is in ms)
                 s.enter((TIME/100), 1, client.send, (EncodedData,))         
+
+                # Runs the previous setting
                 s.run()
 
-                # ESC ROUTINE #
 
-                
+
+                # ESC ROUTINE #
+               
+                # Checks if ESC is pressed. If it is, terminates the loop.
                 if kbhit():
                     if (ord(getche()) == 27):
-                        set_normal_term()
+                        set_normal_term()                   # Sets the terminal to normal mode
                         print "q"
                         print "ESC Key pressed!"
                         break;
 
-
-
                 # END of ESC ROUTINE #
 
 
+    ### END OF CLIENT REQUEST ###
     
