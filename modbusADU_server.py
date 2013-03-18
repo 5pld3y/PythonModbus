@@ -48,6 +48,7 @@ def modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters):
 	
 	# Join the TCP response and the PDU response to get the ADU response
 	ADU_RESPONSE = TCP + PDU_RESPONSEandRegistersTuple[0]
+	#print ADU_RESPONSE
 
 	# Actualize the Registers values.
 	Registers = PDU_RESPONSEandRegistersTuple[1]

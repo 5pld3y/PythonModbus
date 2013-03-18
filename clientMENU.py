@@ -5,7 +5,7 @@ from modbusADU_client import *
 from binoperations import *
 
 # Constants
-MAX_TIME = 300
+MAX_TIME = 300		# Defines the max Time in ms. (100ms = 1 second)
 
 
 def InitialMENU():
@@ -58,7 +58,6 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	if option == "2":
 		# Read Holding Registers
-		# 
 		request = MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 	
@@ -114,31 +113,48 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
 
+	# Check to see if a user wants a loop or not.
 	try:
 		Time = int(raw_input(("Time in ms (press ENTER for just one read): ")))
 	except ValueError:
+		# If not, returns Time = None
 		Time = None
 
+	# If a user wans a loop...
 	if Time != None:
+		# Tests if Time is a correct value.
 		if Time < 0:
 			print "Time must be positive!"
 		elif Time > MAX_TIME:
 			print "Time mus be less than " + str(MAX_TIME) + "ms"
 		else:
+			# If it is, calls the modbus function, to construct the  request ADU.
 			request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
+
+			#returns a list, with the first parameter "READLOOP", to be identified in the client program.
 			return ["READLOOP", Time, StartingAddress, QuantityOfRegisters, request[0]]
 
+	# If it's not a loop, calls the modbus function, to construct the request ADU, and returns the already encoded data.
 	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters)
 	return request
 
 
 def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
+	# Function for dealing with a Write Multiple Registers request.
+	# Can return:
+	# 1. - The already encoded ADU to be sent to the server as a request;
+    # 4. - A list with the following syntax: [ "WRITELOOP", TIME, StartingAddress, QuantityOfRegisters, ByteCount ],
+    #      that result in a Write Loop command.
+
 	print ""
 	print "== [3] Write Multiple Registers =="
 	
-	FunctionCode = 16
+	FunctionCode = 16					# Modbus Function Code of a Write Multiple Registers Function.
 	
 	StartingAddress = int(raw_input("Starting Address: "))
+
+	# Checks if Starting Address is a valid number, doing tests with the First Address and the Number of Registers of the Server.
+	# If it is not, returns None and breaks. 
 	if (StartingAddress < FirstAddress):
 		print "Starting Address must be greater or equal to " + str(FirstAddress)
 		return None
@@ -147,6 +163,9 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		return None
 
 	QuantityOfRegisters = int(raw_input("Quantity Of Registers: "))
+	
+	# Checks if Quantity of Registers is a valid number, doing tests with the First Address and the Number of Registers of the Server.
+	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
