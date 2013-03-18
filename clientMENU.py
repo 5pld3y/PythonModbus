@@ -173,21 +173,25 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	ByteCount = 2 * QuantityOfRegisters
 
 
-
-
+	# Check to see if a user wants a loop or not.
 	try:
 		Time = int(raw_input(("Time in ms (press ENTER for just one read): ")))
 	except ValueError:
-		Time = None
+		Time = None 				# If not, returns Time = None
 
+	# If a user wans a loop...
 	if Time != None:
+		# Tests if Time is a correct value.
 		if Time < 0:
 			print "Time must be positive!"
 		elif Time > MAX_TIME:
 			print "Time mus be less than " + str(MAX_TIME) + "ms"
 		else:
-
+			# if it is, returns a list, with the first parameter "WRITELOOP", to be identified in the client program.
 			return ["WRITELOOP", Time, StartingAddress, QuantityOfRegisters, ByteCount]
+
+
+	# Write to Registers Routine #
 
 	RegisterValue = []
 	i = QuantityOfRegisters
@@ -199,17 +203,24 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		i = i - 1
 		j = j + 1
 
+	# End of Write to Registers Routine #
+
+	# If it's not a loop, calls the modbus function, to construct the request ADU, and returns the already encoded data.
 	request = modbus(TransactionIdentifier, FunctionCode, StartingAddress, QuantityOfRegisters, ByteCount, RegisterValue)
 	return request
 
 def MenuClient_CustomPDU(TransactionIdentifier):
+	# Function to generate a custom (user inputed) PDU.
 	# FunctionCode passed as the full PDU.
 
+	print "Insert each byte of the PDU in a decimal representation, separated by spaces"
 	INPUT = raw_input("Enter the PDU in int with spaces: ")
-	#FunctionCode = list(LIST)
+
+	# Converts the input to a list
 	FunctionCode = map(int, INPUT.split())
 	print "PDU: " + str(FunctionCode)
 	print ""
 
+	# Calls the modbus function, to construct the ADU and encode the messagem.
 	request = modbus(TransactionIdentifier, FunctionCode)
 	return request

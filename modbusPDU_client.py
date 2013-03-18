@@ -8,23 +8,30 @@ from registersoperations import *
 ####################
 
 def createPDU(FunctionCode=0, StartingAdress=0, QuantityOfRegisters=0, ByteCount=0, RegisterValue=0):
+	# This function is used to create the PDU for the request. Returns the PDU.
 
 	if FunctionCode == 3:
+		# Read Holding Registers
 		return PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters)
 
 	elif FunctionCode == 16:
+		# Write Multiple Registers
 		return PDUWriteMultipleRegisters_CREATE(StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue)
 
 	else:
+		# Custom Fuction
 		return PDUCustomPDU(FunctionCode)
 
 
 ## READ HOLDING REGISTERS ##
 
 def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
-	#Create Read Holding Registers
+	#Create Read Holding Registers PDU
 
 	FC = [3]
+
+	# The intTo2Bytes function is called to convert a single int value to a list of two bytes, each represented as 
+	# an int value.
 	SA = intTo2Bytes(StartingAdress)
 	QoR = intTo2Bytes(QuantityOfRegisters)
 
@@ -35,9 +42,15 @@ def PDUReadHoldingRegisters(StartingAdress, QuantityOfRegisters):
 ## WRITE MULTIPLE REGISTERS ##
 
 def PDUWriteMultipleRegisters_CREATE(StartingAdress, QuantityOfRegisters, ByteCount, RegisterValue):
+	# Create Write Multiple Registers PDU
+
 	FC = [16]
+
+	# The intTo2Bytes function is called to convert a single int value to a list of two bytes, each represented as 
+	# an int value.
 	SA = intTo2Bytes(StartingAdress)
 	QoR = intTo2Bytes(QuantityOfRegisters)
+
 	BC = [ByteCount]
 	RV = RegisterValue
 
@@ -48,6 +61,8 @@ def PDUWriteMultipleRegisters_CREATE(StartingAdress, QuantityOfRegisters, ByteCo
 ## CUSTOM PDU ##
 
 def PDUCustomPDU(FunctionCode):
+	# Creates a custom PDU from "FunctionCode"
+
 	PDU = FunctionCode
 	return PDU
 
@@ -57,32 +72,53 @@ def PDUCustomPDU(FunctionCode):
 #####################
 
 def interpretPDU(PDU):
+	# Interprets the response PDU.
+
 	FunctionCode = PDU[0]
+
 	if FunctionCode == 3:
+		# Read Holding Registers
 		PDUReadHoldingRegisters_interpret(PDU)
+
 	elif FunctionCode == 16:
+		# Write Multiple Registers
 		PDUWriteMultipleRegisters_interpret(PDU)
 	else:
+		# Error!
 		Error(PDU)
 
 
 ## READ HOLDING REGISTERS ##
 
 def PDUReadHoldingRegisters_interpret(PDU):
+	# Read Holding Registers
+
 	FunctionCode = PDU[0]
 	ByteCount = PDU[1]
 	RV = PDU[2:]
 
 	print "Number of Registers read: " + str(ByteCount / 2)
 	print ""
+
+	# Function that prints the registers.
 	printRegisters(RV)
 
+
+## WRITE MULTIPLE REGISTERS ##
+
 def PDUWriteMultipleRegisters_interpret(PDU):
+	# Write Multipe Registers
+
 	FunctionCode = PDU[0]
 	SA = PDU[1:3]
 	QoR = PDU[4:5]
 
+
+## ERROR! ##
+
 def Error(PDU):
+	## Gets the Function Code (error) and the Exception Code and prints them.
+
 	FunctionCode = PDU[0]
 	ExceptionCode = PDU[1]
 
