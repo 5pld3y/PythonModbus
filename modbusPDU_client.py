@@ -74,7 +74,11 @@ def PDUCustomPDU(FunctionCode):
 def interpretPDU(PDU):
 	# Interprets the response PDU.
 
+	# Prints the response PDU.
+	print "PDU Response: " + str(PDU)
+
 	FunctionCode = PDU[0]
+
 
 	if FunctionCode == 3:
 		# Read Holding Registers
