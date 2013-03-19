@@ -21,7 +21,7 @@ def InitialMENU():
 	except ValueError:
 		print "PORT set to DEFAULT VALUE (502)"
 		PORT = 502
-		
+
 	print ""
 	return (HOST,PORT)
 
@@ -172,6 +172,7 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		StartingAddress = int(raw_input("Starting Address: "))
 	except ValueError:
 		print "Value Error! (try again)"
+		return None
 
 	# Checks if Starting Address is a valid number, doing tests with the First Address and the Number of Registers of the Server.
 	# If it is not, returns None and breaks. 

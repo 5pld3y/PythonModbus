@@ -19,6 +19,11 @@ def initialMENU():
 		print "First Address set to DEFAULT VALUE (0)"
 		FirstAddress = 0
 
+	if (FirstAddress >= 65535):
+		print "Value must be less than 65535"
+		print "First Address set to DEFAULT VALUE (0)"
+		FirstAddress = 0
+
 	try:	
 		NumberOfRegisters = int(raw_input("Number Of Registers: "))			# Prompts user for the NumberOfRegisters
 	except ValueError:
@@ -29,6 +34,13 @@ def initialMENU():
 		print "Max value for Number of Registers is 123!"
 		print "Number Of Registers: 123"
 		NumberOfRegisters = 123
+
+	if ((FirstAddress+NumberOfRegisters) >= 65535):
+		print "Error! Limit of Registers exceded!"
+		print "FirstAddress set to DEFAULT VALUE (0)"
+		print "Number Of Registers set to DEFAULT VALUE (9)"
+		FirstAddress = 0
+		NumberOfRegisters = 9
 
 	print ""
 

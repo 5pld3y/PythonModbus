@@ -272,6 +272,7 @@ while 1:
                     try:
                         X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
                     except ValueError:
+                        print "Error! Value set to 0!"
                         X = [0, 0]
                     RegisterValue = RegisterValue + X
                     i = i - 1
