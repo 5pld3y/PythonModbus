@@ -23,9 +23,18 @@ def writeFile(Registers, filename):
 	f.close()
 
 
-def readFile(filename):
+def readFile(filename, NumberOfRegisters):
 	f = open(filename, 'r+')
-	lines = [int(line.strip()) for line in f]
+	try:
+		lines = [int(line.strip()) for line in f]
+	except ValueError:
+		print "Error reading!"
+		registers = [0] * 2 * NumberOfRegisters
+		print "Registers set to DEFAULT VALUE!"
+		print "Registers: " + str(registers)
+		print ""
+		f.close()
+		return registers
 	f.close()
 	
 	length = len(lines)

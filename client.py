@@ -269,7 +269,10 @@ while 1:
                 j = StartingAddress
 
                 while i>0:
-                    X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
+                    try:
+                        X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
+                    except ValueError:
+                        X = [0, 0]
                     RegisterValue = RegisterValue + X
                     i = i - 1
                     j = j + 1

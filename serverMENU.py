@@ -65,8 +65,7 @@ def RegistersInitializeMENU(Registers, FirstAddress, NumberOfRegisters):
 		filename = raw_input("Filename: ")
 
 		try:
-			Registers = readFile(filename)
-
+			Registers = readFile(filename, NumberOfRegisters)
 			print "File Read Sucessful!"
 
 			if (len(Registers) != (2 * NumberOfRegisters)):
@@ -76,6 +75,8 @@ def RegistersInitializeMENU(Registers, FirstAddress, NumberOfRegisters):
 				print "New Number of Registers: " + str(NumberOfRegisters)
 				print ""
 				print "Registers: " + str(Registers)
+				return [Registers, NumberOfRegisters]
+			else:
 				return [Registers, NumberOfRegisters]
 		except IOError:
 			print "File not Found!"

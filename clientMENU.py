@@ -15,7 +15,13 @@ def InitialMENU():
 	print ""
 	print "== Modbus Client =="
 	HOST = raw_input("HOST Address: ")
-	PORT = int(raw_input("PORT: "))
+
+	try:
+		PORT = int(raw_input("PORT: "))
+	except ValueError:
+		print "PORT set to DEFAULT VALUE (502)"
+		PORT = 502
+		
 	print ""
 	return (HOST,PORT)
 
@@ -94,8 +100,12 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print "== [1] Read Holding Registers =="
 	FunctionCode = 3 			# Modbus Function Code of a Read Holding Registers Function.
 	
-	StartingAddress = int(raw_input("Starting Address: "))
-	
+	try:
+		StartingAddress = int(raw_input("Starting Address: "))
+	except ValueError:
+		print "Value Error! (try again)"
+		return None
+
 	# Checks if Starting Address is a valid number, doing tests with the First Address and the Number of Registers of the Server.
 	# If it is not, returns None and breaks.
 	if (StartingAddress < FirstAddress):
@@ -105,15 +115,18 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		print "Starting Address must be less or equal to " + str(FirstAddress+NumberOfRegisters-1)
 		return None
 
-
-	QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
+	try:
+		QuantityOfRegisters = int(raw_input("Quantity of Registers: "))
+	except ValueError:
+		print "Value Error! (try again)"
+		return None
 
 	# Checks if Quantity of Registers is a valid number, doing tests with the First Address and the Number of Registers of the Server.
 	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
-	if ((QuantityOfRegisters) >= 124)
+	if ((QuantityOfRegisters) >= 124):
 		print "Too much Registers! Must be less than 124!"
 		return None
 
@@ -155,7 +168,10 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	
 	FunctionCode = 16					# Modbus Function Code of a Write Multiple Registers Function.
 	
-	StartingAddress = int(raw_input("Starting Address: "))
+	try:
+		StartingAddress = int(raw_input("Starting Address: "))
+	except ValueError:
+		print "Value Error! (try again)"
 
 	# Checks if Starting Address is a valid number, doing tests with the First Address and the Number of Registers of the Server.
 	# If it is not, returns None and breaks. 
@@ -166,14 +182,18 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 		print "Starting Address must be less or equal to " + str(FirstAddress+NumberOfRegisters-1)
 		return None
 
-	QuantityOfRegisters = int(raw_input("Quantity Of Registers: "))
-	
+	try:
+		QuantityOfRegisters = int(raw_input("Quantity Of Registers: "))
+	except ValueError:
+		print "Value Error! (try again)"
+		return None
+
 	# Checks if Quantity of Registers is a valid number, doing tests with the First Address and the Number of Registers of the Server.
 	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
 		return None
-	if (QuantityOfRegisters >= 124)
+	if (QuantityOfRegisters >= 124):
 		print "Too much Registers! Must be less than 124!"
 		return None
 
@@ -205,7 +225,11 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	j = StartingAddress
 
 	while i>0:
-		X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
+		try:
+			X = intTo2Bytes(int(raw_input("R" + str(j) + ": ")))
+		except ValueError:
+			print "Value Error! try again!"
+			return None
 		RegisterValue = RegisterValue + X
 		i = i - 1
 		j = j + 1
