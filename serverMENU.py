@@ -1,5 +1,8 @@
 # serverMENU.py
 
+# Imports
+from binoperations import *
+
 def initialMENU():
 	print ""
 	print "== Modbus Server =="
@@ -42,8 +45,8 @@ def RegistersInitialize(Registers, FirstAddress, NumberOfRegisters):
 
 	i = 0
 	while (i < NumberOfRegisters) :
-		V = int(raw_input("R" + str(i + FirstAddress) + ": "))
-		Registers = Registers + [V]
+		V = intTo2Bytes(int(raw_input("R" + str(i + FirstAddress) + ": ")))
+		Registers = Registers + V
 		i += 1
 
 	return Registers 		# Returns the Registers list.
