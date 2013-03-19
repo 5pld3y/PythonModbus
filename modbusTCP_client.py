@@ -7,7 +7,7 @@ from binoperations import *
 ## REQUEST CLIENT ##
 ####################
 
-def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 1, UnitIdentifier = 0):
+def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 0, UnitIdentifier = 1):
 	# This function is used to create the TCP of the request. Returns a list with the TCP Header and
 	# the Transaction Identifier.
 

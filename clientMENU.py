@@ -3,6 +3,7 @@
 # Imports
 from modbusADU_client import *
 from binoperations import *
+from clearscreen import *
 
 # Constants
 MAX_TIME = 300		# Defines the max Time in ms. (100ms = 1 second)
@@ -55,6 +56,8 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	print ""
 
 	option = raw_input("Select an option: ")
+
+	clearConsole()
 
 	if option == "2":
 		# Read Holding Registers
