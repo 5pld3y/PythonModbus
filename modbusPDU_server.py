@@ -44,7 +44,7 @@ def decodePDU(PDU, Registers, FirstAddress, NumberOfRegisters):
 		# code 1. Prints this information to the console and returns a tuple with the PDU response, 
 		# (Function Code followed by the Exception Code) and the Registers list.
 
-		FC = [FunctionCode]
+		FC = [FunctionCode + 128]
 		ExceptionCode = 1
 		print "ERROR!"
 		print "Exception Code: " + str(ExceptionCode)

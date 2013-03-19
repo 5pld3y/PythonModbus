@@ -40,7 +40,7 @@ def modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters):
 	##############
 
 	# Gets the length of the PDU request, in order to generate the correct TCP Length parameter.
-	Length = len(PDU)
+	Length = len(PDU_RESPONSEandRegistersTuple[0])
 
 	# creates the TCP response with the same Transaction Identifier as the response and a different length, 
 	# based on the length of the PDU response.
