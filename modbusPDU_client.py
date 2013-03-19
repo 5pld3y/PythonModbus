@@ -75,6 +75,7 @@ def interpretPDU(PDU):
 	# Interprets the response PDU.
 
 	# Prints the response PDU.
+	print ""
 	print "PDU Response: " + str(PDU)
 
 	FunctionCode = PDU[0]
