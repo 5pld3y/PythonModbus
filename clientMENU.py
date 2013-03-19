@@ -45,7 +45,6 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
     # 4. - A list with the following syntax: [ "WRITELOOP", TIME, StartingAddress, QuantityOfRegisters, ByteCount ],
     #      that result in a Write Loop command.
 
-
 	print ""
 	print "== Client Menu =="
 	print "[1] Read Holding Registers"
@@ -75,7 +74,7 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	elif option == "4":
 		# Quit
-		print "== [5] Quit =="
+		print "== [4] Quit =="
 		print "Client Closed!"
 		return "close"
 
@@ -92,7 +91,7 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
     #      that results in a Read Loop command.
 
 	print ""
-	print "== [2] Read Holding Registers =="
+	print "== [1] Read Holding Registers =="
 	FunctionCode = 3 			# Modbus Function Code of a Read Holding Registers Function.
 	
 	StartingAddress = int(raw_input("Starting Address: "))
@@ -113,6 +112,9 @@ def MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
+		return None
+	if ((QuantityOfRegisters) >= 124)
+		print "Too much Registers! Must be less than 124!"
 		return None
 
 	# Check to see if a user wants a loop or not.
@@ -149,7 +151,7 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
     #      that result in a Write Loop command.
 
 	print ""
-	print "== [3] Write Multiple Registers =="
+	print "== [2] Write Multiple Registers =="
 	
 	FunctionCode = 16					# Modbus Function Code of a Write Multiple Registers Function.
 	
@@ -170,6 +172,9 @@ def MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 	# If it is not, returns None and breaks.
 	if ((QuantityOfRegisters+StartingAddress) > (FirstAddress + NumberOfRegisters)):
 		print "Too much Registers! Must be less or equal to " + str(FirstAddress+NumberOfRegisters-StartingAddress)
+		return None
+	if (QuantityOfRegisters >= 124)
+		print "Too much Registers! Must be less than 124!"
 		return None
 
 	ByteCount = 2 * QuantityOfRegisters
@@ -215,6 +220,9 @@ def MenuClient_CustomPDU(TransactionIdentifier):
 	# Function to generate a custom (user inputed) PDU.
 	# FunctionCode passed as the full PDU.
 
+	print ""
+	print "== [3] Custom PDU =="
+	print ""
 	print "Insert each byte of the PDU in a decimal representation, separated by spaces"
 	INPUT = raw_input("Enter the PDU in int with spaces: ")
 

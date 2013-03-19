@@ -84,6 +84,7 @@ Registers = Registers[0]
 HOST = ''                 # Symbolic name meaning all available interfaces
 ADDR = (HOST,PORT)        # Tuple with the Host Address and the Port
 BUFSIZE = 4096            # BUFSIZE used for communications
+threadFlag = False
 
 
 ##################
@@ -131,32 +132,46 @@ def clientthread(conn, Registers, FirstAddress):
     print ""
     
     while 1:
-        data = conn.recv(1024)              # Gets data in bytes
-        dataDecoded = decode(data)          # Data is decoded to Python recognized variables
 
-        if not data:
-            break
-        elif data == "close":
-            # Detects if a client disconnected from the server.
+        if getStopThread(threadFlag):
             conn.close()
-            print "Disconnected from " + addr[0] + ":" + str(addr[1])
-            print ""
-            break;
-        else:
-            # Prints the decoded data.
-            print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
 
-        # Calls the modbus_decode function to interpret the decoded data received.
-        # Function returns a tuple with the ADU to be sent as a response and the actualized Registers list.
-        ADU_RESPONSEandRegistersTuple = modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters)
-        
-        ADU_response = ADU_RESPONSEandRegistersTuple[0]         # Gets the ADU to be sent as a response.
-        Registers = ADU_RESPONSEandRegistersTuple[1]            # Gets the new Registers values.
+        try:
+            data = conn.recv(1024)              # Gets data in bytes
+            dataDecoded = decode(data)          # Data is decoded to Python recognized variables
 
-        # Sends the ADU response to the client
-        conn.sendall(ADU_response)
+            if not data:
+                break
+            elif data == "close":
+                # Detects if a client disconnected from the server.
+                conn.close()
+                print "Disconnected from " + addr[0] + ":" + str(addr[1])
+                print ""
+                break;
+            else:
+                # Prints the decoded data.
+                print "[" + addr[0] + ":" + str(addr[1]) + "]: " + str(dataDecoded)
+
+            # Calls the modbus_decode function to interpret the decoded data received.
+            # Function returns a tuple with the ADU to be sent as a response and the actualized Registers list.
+            ADU_RESPONSEandRegistersTuple = modbus_decode(dataDecoded, Registers, FirstAddress, NumberOfRegisters)
+            
+            ADU_response = ADU_RESPONSEandRegistersTuple[0]         # Gets the ADU to be sent as a response.
+            Registers = ADU_RESPONSEandRegistersTuple[1]            # Gets the new Registers values.
+    
+                # Sends the ADU response to the client
+            conn.sendall(ADU_response)
+        except socket.error:
+            pass
 
     conn.close()
+
+def getStopThread(threadFlag):
+    return threadFlag
+
+def setStopThread(threadFlag=True):
+    return threadFlag
+
 
 
 #############
@@ -164,7 +179,9 @@ def clientthread(conn, Registers, FirstAddress):
 #############
 
 # Calls the serverMENU() function and returns the user input (in a string).
+
 option = serverMENU()
+threadFlag = setStopThread(False)
 
 while 1: 
 
@@ -185,15 +202,34 @@ while 1:
         print "listening on PORT " + str(PORT) + "..."
 
         while 1:
-            # ... if it catches a connection, it connects ...        
-            conn, addr = server.accept()
-            print "Connected with " + addr[0] + ":" + str(addr[1])
-            # ... and starts a new thread to deal with the clients requests.
-            thread.start_new_thread(clientthread ,(conn,Registers,FirstAddress))
+            # ... if it catches a connection, it connects ...
+            #server.settimeout(1)
+            server.setblocking(0)        
+            try:
+                conn, addr = server.accept()
+                print "Connected with " + addr[0] + ":" + str(addr[1])
+                # ... and starts a new thread to deal with the clients requests.
+                thread.start_new_thread(clientthread ,(conn,Registers,FirstAddress))
+            except socket.error:
+                pass
+
+            # Checks if ESC is pressed. If it is, terminates the loop.
+            set_curses_term()
+            if kbhit():
+                if (ord(getche()) == 27):
+                    set_normal_term()                   # Sets the terminal to normal mode
+                    print "q"
+                    print "ESC Key pressed!"
+                    threadFlag = setStopThread()
+                    option = None
+                    break;
+
+            # END of ESC ROUTINE #           
 
 
     elif option == "3":
         # Option to close the Server.
+        threadFlag = setStopThread()
         print "Do you want to save the Registers to file?"
         option = raw_input("(type y or Y to YES, ENTER to NO): ")
 
@@ -205,6 +241,8 @@ while 1:
                 print "Sucessful File Write!"
             except IOError:
                 print "filename error!"
+                writeFile(Registers, "log.txt")
+                print "Saved to log.txt"
 
         print "Server Closed!"
         server.close()
@@ -212,3 +250,4 @@ while 1:
 
     else:
         option = serverMENU()
+        threadFlag = setStopThread(False)

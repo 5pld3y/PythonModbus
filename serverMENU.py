@@ -7,9 +7,29 @@ from fileoperations import *
 def initialMENU():
 	print ""
 	print "== Modbus Server =="
-	PORT = int(raw_input("PORT: "))										# Prompts user for the PORT
-	FirstAddress = int(raw_input("First Address: "))					# Prompts user for the FirstAddress
-	NumberOfRegisters = int(raw_input("Number Of Registers: "))			# Prompts user for the NumberOfRegisters
+	try:
+		PORT = int(raw_input("PORT: "))										# Prompts user for the PORT
+	except ValueError:
+		print "PORT set to DEFAULT VALUE (502)"
+		PORT = 502
+
+	try:
+		FirstAddress = int(raw_input("First Address: "))					# Prompts user for the FirstAddress
+	except ValueError:
+		print "First Address set to DEFAULT VALUE (0)"
+		FirstAddress = 0
+
+	try:	
+		NumberOfRegisters = int(raw_input("Number Of Registers: "))			# Prompts user for the NumberOfRegisters
+	except ValueError:
+		print "Number Of Registers set to DEFAULT VALUE (9)"
+		NumberOfRegisters = 9
+
+	if (NumberOfRegisters >= 124):
+		print "Max value for Number of Registers is 123!"
+		print "Number Of Registers: 123"
+		NumberOfRegisters = 123
+
 	print ""
 
 	# Creates a Register List with initial value 0 (zero) for all registers.

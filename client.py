@@ -123,7 +123,13 @@ while 1:
     ready = select([client], [], [], 0.1)
     
     if ready[0]:
-        data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+        try:
+            data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+        except socket.error:
+            print ""
+            print "CONNECTION ERROR!"
+            print ""
+            break
         dataDecoded = decode(data)              # Decodes the data received to a list of integers.
 
         # Test to check if it's the first data packet received (marked with the first value of 255).
@@ -205,7 +211,13 @@ while 1:
                 ready = select([client], [], [], 0.1)
         
                 if ready[0]:
-                    data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+                    try:
+                        data = client.recv(BUFSIZE)             # Receives the data from the server (in binary).
+                    except socket.error:
+                        print ""
+                        print "CONNECTION ERROR!"
+                        print ""
+                        break
                     dataDecoded = decode(data)              # Decodes the data received to a list of integers.
 
                 # Calls function modbus_response_decode to deal with the already decoded (into a list) data.
