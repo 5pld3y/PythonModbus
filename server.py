@@ -168,6 +168,14 @@ option = serverMENU()
 
 while 1: 
 
+    if option == "1":
+        print "== [1] Configure Server =="
+        print ""
+
+        RegistersANDNumberOfRegistersLIST = RegistersInitializeMENU(Registers, FirstAddress, NumberOfRegisters)
+        Registers = RegistersANDNumberOfRegistersLIST[0]
+        NumberOfRegisters = RegistersANDNumberOfRegistersLIST[1]
+
     if option == "2":
         
         print "== [2] Listen =="

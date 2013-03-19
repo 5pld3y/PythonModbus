@@ -15,13 +15,21 @@ def initialMENU():
 	# Creates a Register List with initial value 0 (zero) for all registers.
 	Registers = [0] * 2 * NumberOfRegisters
 
+	RegistersANDNumberOfRegistersLIST = RegistersInitializeMENU(Registers, FirstAddress, NumberOfRegisters)
+	Registers = RegistersANDNumberOfRegistersLIST[0]
+	NumberOfRegisters = RegistersANDNumberOfRegistersLIST[1]
 
+	print ""
 
+	# returns a list to be called MENU_LIST in the server.py file.
+	return [PORT, FirstAddress, NumberOfRegisters, Registers]
+
+def RegistersInitializeMENU(Registers, FirstAddress, NumberOfRegisters):
 	## REGISTERS INITIALIZATION ROUTINE ##
 	# Asks the User to initialize the Registers
 
 	print "Do you want to initialize the Registers?"
-	option = raw_input("(type I or i for INITIALIZE, type F or f for READ FROM FILE, ENTER for NO): ")
+	option = raw_input("(type I or i for INITIALIZE, type F or f for READ FROM FILE, ENTER for DEFAULT): ")
 
 	if (option == 'i' or option == 'I'):
 		print ""
@@ -29,6 +37,7 @@ def initialMENU():
 		# Calls the function RegistersInitialize to handle the initializations.
 		Registers = RegistersInitialize(Registers, FirstAddress, NumberOfRegisters)
 		print "Registers: " + str(Registers)
+		return [Registers, NumberOfRegisters]
 
 	if (option == 'f' or option == 'F'):
 		print ""
@@ -46,25 +55,24 @@ def initialMENU():
 				NumberOfRegisters = (len(Registers) / 2)
 				print "New Number of Registers: " + str(NumberOfRegisters)
 				print ""
-
-			print "Registers: " + str(Registers)
+				print "Registers: " + str(Registers)
+				return [Registers, NumberOfRegisters]
 		except IOError:
 			print "File not Found!"
 			Registers = [0] * 2 * NumberOfRegisters
 			print ""
 			print "Registers created with default value!"
 			print "Registers:" + str(Registers)
+			return [Registers, NumberOfRegisters]
 
-
-
+	else:
+		Registers = [0] * 2 * NumberOfRegisters
+		print ""
+		print "Registers created with default value!"
+		print "Registers:" + str(Registers)
+		return [Registers, NumberOfRegisters]
 
 	## END of REGISTERS INITIALIZATION ROUTINE ##
-
-	print ""
-
-	# returns a list to be called MENU_LIST in the server.py file.
-	return [PORT, FirstAddress, NumberOfRegisters, Registers]
-
 
 
 def RegistersInitialize(Registers, FirstAddress, NumberOfRegisters):
