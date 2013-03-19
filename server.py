@@ -186,6 +186,18 @@ while 1:
 
     elif option == "3":
         # Option to close the Server.
+        print "Do you want to save the Registers to file?"
+        option = raw_input("(type y or Y to YES, ENTER to NO): ")
+
+        if (option == 'y' or option == 'Y'):
+            filename = raw_input("Filename: ")
+
+            try:
+                writeFile(Registers, filename)
+                print "Sucessful File Write!"
+            except IOError:
+                print "filename error!"
+
         print "Server Closed!"
         server.close()
         break

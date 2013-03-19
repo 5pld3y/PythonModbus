@@ -57,7 +57,7 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	option = raw_input("Select an option: ")
 
-	clearConsole()
+	#clearConsole()
 
 	if option == "2":
 		# Read Holding Registers

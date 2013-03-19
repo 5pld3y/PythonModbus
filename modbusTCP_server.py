@@ -31,7 +31,7 @@ def decodeTCP(TCP):
 
 
 
-def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 0, UnitIdentifier = 0):
+def createTCP(TransactionIdentifier = 0, Length = 1, ProtocolIdentifier = 0, UnitIdentifier = 1):
 	# Function called to build the TCP layer of the RESPONSE. Returns a list with each byte value represented as an
 	# int value.
 

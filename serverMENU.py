@@ -2,6 +2,7 @@
 
 # Imports
 from binoperations import *
+from fileoperations import *
 
 def initialMENU():
 	print ""
@@ -20,14 +21,42 @@ def initialMENU():
 	# Asks the User to initialize the Registers
 
 	print "Do you want to initialize the Registers?"
-	option = raw_input("(type Y or y for YES, ENTER for NO) ")
+	option = raw_input("(type I or i for INITIALIZE, type F or f for READ FROM FILE, ENTER for NO): ")
 
-	if (option == 'y' or option == 'Y'):
+	if (option == 'i' or option == 'I'):
 		print ""
 		print "== Register Initialization =="
 		# Calls the function RegistersInitialize to handle the initializations.
 		Registers = RegistersInitialize(Registers, FirstAddress, NumberOfRegisters)
-		print "Register: " + str(Registers)
+		print "Registers: " + str(Registers)
+
+	if (option == 'f' or option == 'F'):
+		print ""
+		print "== Read Registers from File =="
+		filename = raw_input("Filename: ")
+
+		try:
+			Registers = readFile(filename)
+
+			print "File Read Sucessful!"
+
+			if (len(Registers) != (2 * NumberOfRegisters)):
+				print ""
+				print "Number Of Registers actualized!"
+				NumberOfRegisters = (len(Registers) / 2)
+				print "New Number of Registers: " + str(NumberOfRegisters)
+				print ""
+
+			print "Registers: " + str(Registers)
+		except IOError:
+			print "File not Found!"
+			Registers = [0] * 2 * NumberOfRegisters
+			print ""
+			print "Registers created with default value!"
+			print "Registers:" + str(Registers)
+
+
+
 
 	## END of REGISTERS INITIALIZATION ROUTINE ##
 

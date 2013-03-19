@@ -1,3 +1,6 @@
+# fileoperations.py
+
+# Imports
 from binoperations import *
 import os
 
@@ -8,7 +11,6 @@ def writeFile(Registers, filename):
 	j = 0
  	stringRegisters = ""
  	length = len(Registers)
- 	print registers
  	while i < length:
  		X = [Registers[i], Registers[i+1]]
  		Num = TwoBytesToInt(X)
@@ -19,6 +21,7 @@ def writeFile(Registers, filename):
 	f = open(filename,'w+')
 	f.write(stringRegisters) 
 	f.close()
+
 
 def readFile(filename):
 	f = open(filename, 'r+')
