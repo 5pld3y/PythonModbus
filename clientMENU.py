@@ -48,33 +48,32 @@ def MenuClient(FirstAddress, NumberOfRegisters, TransactionIdentifier):
 
 	print ""
 	print "== Client Menu =="
-	print "[1] Configure Server"
-	print "[2] Read Holding Registers"
-	print "[3] Write Multiple Registers"
-	print "[4] Enter Custom PDU"
-	print "[5] Quit"
+	print "[1] Read Holding Registers"
+	print "[2] Write Multiple Registers"
+	print "[3] Enter Custom PDU"
+	print "[4] Quit"
 	print ""
 
 	option = raw_input("Select an option: ")
 
 	#clearConsole()
 
-	if option == "2":
+	if option == "1":
 		# Read Holding Registers
 		request = MenuClient_Read(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 	
-	elif option == "3":
+	elif option == "2":
 		# Write Multiple Registers
 		request = MenuClient_Write(FirstAddress, NumberOfRegisters, TransactionIdentifier)
 		return request
 
-	elif option == "4":
+	elif option == "3":
 		# Enter Custom PDU
 		request = MenuClient_CustomPDU(TransactionIdentifier)
 		return request
 
-	elif option == "5":
+	elif option == "4":
 		# Quit
 		print "== [5] Quit =="
 		print "Client Closed!"
